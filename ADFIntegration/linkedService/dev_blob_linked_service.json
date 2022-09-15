@@ -1,0 +1,17 @@
+{
+	"name": "dev_blob_linked_service",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "dev_key_linked",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "daadevsecret"
+			}
+		}
+	}
+}
