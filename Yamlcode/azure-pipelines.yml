@@ -73,7 +73,7 @@ stages:
                   inputs:
                     buildType: current
                     artifactName: 'ArmTemplates'
-                    targetPath: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles'
+                    targetPath: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate'
                   displayName: Downloading Artifact
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Deploying to UAT RG task'
@@ -85,8 +85,8 @@ stages:
                     resourceGroupName: $(rguatname)
                     location: $(UATlocation)
                     templateLocation: Linked artifact
-                    csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
-                    csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
+                    csmFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateForFactory.json'
+                    csmParametersFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateParametersForFactory.json'
                     overrideParameters: '-factoryName $(uat_datafactoryname)'
                     deploymentMode: Incremental
 
