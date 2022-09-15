@@ -2,22 +2,20 @@ trigger:
 - main 
 
 pool:
-  vmImage: 'ubuntu-latest'
+  vmImage: 'windows-latest'
 # Installs Node and the npm packages saved in your package.json file in the build
 stages:
   - stage: build_adf
-    variables:
-      - template: dev-variables.yaml
     displayName: Build ADF artifact
     jobs:
       - job: Creating
         displayName: "Creating Artifact"
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'windows-latest'
         steps:
           - task: NodeTool@0
             inputs:
-              versionSpec: '10.x'
+              versionSpec: '14.x'
             displayName: 'Install Node.js'
 
           - task: Npm@1
@@ -34,7 +32,7 @@ stages:
             inputs:
               command: 'custom'
               workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles' #package.json folder
-              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/${{ variables.resourcegroupid }}/resourceGroups/${{ variables.resourcegroup }}/providers/Microsoft.DataFactory/factories/${{ variables.adfname }}'
+              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(variables.resourcegroup)/providers/Microsoft.DataFactory/factories/$(variables.adfname)'
             displayName: 'Validate'
 
 # Validate and then generate the ARM template into the destination folder, which is the same as selecting "Publish" from the UX.
@@ -44,7 +42,7 @@ stages:
             inputs:
               command: 'custom'
               workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/${{ variables.resourcegroupid }}/resourceGroups/${{ variables.resourcegroup }}/providers/Microsoft.DataFactory/factories/${{ variables.adfname }} "ArmTemplate"'  
+              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(variables.resourcegroupid)/resourceGroups/$(variables.resourcegroup)/providers/Microsoft.DataFactory/factories/$(variables.adfname) "ArmTemplate"'  
             displayName: 'Validate and Generate ARM template'
 
 # Publish the artifact to be used as a source for a release pipeline.
@@ -60,12 +58,12 @@ stages:
     displayName: 'UAT deploy'
     dependsOn: build_adf
     variables:
-      - template: uat-variables.yaml
-    
+      dataFactoryName: $(uat_datafactoryname)
+  
     jobs:
       - deployment: DeploytoUAT
         pool:
-          vmImage: 'ubuntu-latest'
+          vmImage: 'windows-latest'
         environment: UAT
         strategy:
           runOnce:
@@ -81,15 +79,15 @@ stages:
                   displayName: 'Deploying to UAT RG task'
                   inputs:
                     deploymentScope: Resource Group
-                    azureResourceManagerConnection: ${{ variables.myserviceconnection }}
-                    subscriptionId: ${{ variables.subscriptionid }}
+                    azureResourceManagerConnection: $(myserviceconnection)
+                    subscriptionId: $(subscriptionid)
                     action: Create Or Update Resource Group
-                    resourceGroupName: ${{ variables.rguatname }}
-                    location: ${{ variables.UATlocation }}
+                    resourceGroupName: $(rguatname)
+                    location: $(UATlocation)
                     templateLocation: Linked artifact
                     csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
                     csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
-                    overrideParameters: '-factoryName ${{ variables.adfuatname }} -AzureBlobStorageconnection_properties_typeProperties_connectionString_secretName ${{ variables.UATsecretname }} -AzureKeyVaultcode_properties_typeProperties_baseUrl ${{ variables.UATkeyurl }}'
+                    overrideParameters: '-factoryName $(adfuatname) -AzureBlobStorageconnection_properties_typeProperties_connectionString_secretName $(UATsecretname) -AzureKeyVaultcode_properties_typeProperties_baseUrl $(UATkeyurl)'
                     deploymentMode: Incremental
 
 
