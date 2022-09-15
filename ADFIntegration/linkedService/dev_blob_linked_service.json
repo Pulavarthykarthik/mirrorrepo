@@ -10,7 +10,7 @@
 					"referenceName": "dev_key_linked",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "daadevsecret"
+				"secretName": "daasecretdev"
 			}
 		}
 	}
