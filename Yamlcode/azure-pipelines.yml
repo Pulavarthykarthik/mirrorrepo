@@ -21,7 +21,7 @@ stages:
           - task: Npm@1
             inputs:
               command: 'install'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles' 
+              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' 
               verbose: true
             displayName: 'Install npm package'
 
@@ -31,8 +31,8 @@ stages:
           - task: Npm@1
             inputs:
               command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles' #package.json folder
-              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname)'
+              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' #package.json folder
+              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname)'
             displayName: 'Validate'
 
 # Validate and then generate the ARM template into the destination folder, which is the same as selecting "Publish" from the UX.
@@ -41,14 +41,14 @@ stages:
           - task: Npm@1
             inputs:
               command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname) ArmTemplate'  
+              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration'
+              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname) ArmTemplate'  
             displayName: 'Validate and Generate ARM template'
 
 # Publish the artifact to be used as a source for a release pipeline.
           - task: CopyFiles@2
             inputs:
-              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate'
+              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/ArmTemplate'
               Contents: '**'
               TargetFolder: '$(build.artifactstagingdirectory)/application'
             displayName: 'Copying application artifact'
