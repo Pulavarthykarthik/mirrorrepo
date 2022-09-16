@@ -42,13 +42,13 @@ stages:
             inputs:
               command: 'custom'
               workingDir: '$(Build.Repository.LocalPath)/ADFIntegration'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname) ArmTemplate'  
+              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname) artifacts'  
             displayName: 'Validate and Generate ARM template'
 
 # Publish the artifact to be used as a source for a release pipeline.
           - task: CopyFiles@2
             inputs:
-              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/ArmTemplate'
+              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/artifacts'
               Contents: '**'
               TargetFolder: '$(build.artifactstagingdirectory)/application'
             displayName: 'Copying application artifact'
