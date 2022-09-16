@@ -79,7 +79,7 @@ stages:
                 - task: DownloadPipelineArtifact@2
                   inputs:
                     source: current
-                    artifactName: 'ArmTemplates'
+                    artifactName: 'datafactory'
                     targetPath: '$(Pipeline.Workspace)'
                   displayName: Downloading Artifact
                 - task: AzureResourceManagerTemplateDeployment@3
