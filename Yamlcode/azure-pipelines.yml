@@ -32,7 +32,7 @@ stages:
             inputs:
               command: 'custom'
               workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles' #package.json folder
-              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(variables.resourcegroup)/providers/Microsoft.DataFactory/factories/$(variables.adfname)'
+              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname)'
             displayName: 'Validate'
 
 # Validate and then generate the ARM template into the destination folder, which is the same as selecting "Publish" from the UX.
@@ -42,7 +42,7 @@ stages:
             inputs:
               command: 'custom'
               workingDir: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(variables.resourcegroupid)/resourceGroups/$(variables.resourcegroup)/providers/Microsoft.DataFactory/factories/$(variables.adfname) "ArmTemplate"'  
+              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(resourcegroupid)/resourceGroups/$(resourcegroup)/providers/Microsoft.DataFactory/factories/$(adfname) "ArmTemplate"'  
             displayName: 'Validate and Generate ARM template'
 
 # Publish the artifact to be used as a source for a release pipeline.
@@ -73,7 +73,7 @@ stages:
                   inputs:
                     buildType: current
                     artifactName: 'ArmTemplates'
-                    targetPath: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles'
+                    targetPath: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate'
                   displayName: Downloading Artifact
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Deploying to UAT RG task'
@@ -85,9 +85,9 @@ stages:
                     resourceGroupName: $(rguatname)
                     location: $(UATlocation)
                     templateLocation: Linked artifact
-                    csmFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateForFactory.json'
-                    csmParametersFile: '$(Pipeline.Workspace)/ArmTemplates/ARMTemplateParametersForFactory.json'
-                    overrideParameters: '-factoryName $(adfuatname) -AzureBlobStorageconnection_properties_typeProperties_connectionString_secretName $(UATsecretname) -AzureKeyVaultcode_properties_typeProperties_baseUrl $(UATkeyurl)'
+                    csmFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateForFactory.json'
+                    csmParametersFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateParametersForFactory.json'
+                    overrideParameters: '-factoryName $(adfuatname) -dev_blob_linked_service_properties_typeProperties_connectionString_secretName $(UATsecretname) -AzureKeyVaultcode_properties_typeProperties_baseUrl $(UATkeyurl)'
                     deploymentMode: Incremental
 
 
