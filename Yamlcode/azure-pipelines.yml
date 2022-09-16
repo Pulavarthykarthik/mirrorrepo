@@ -87,7 +87,7 @@ stages:
                     templateLocation: Linked artifact
                     csmFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateForFactory.json'
                     csmParametersFile: '$(Build.Repository.LocalPath)/ADFIntegration/DevOpsFiles/ArmTemplate/ArmTemplates/ARMTemplateParametersForFactory.json'
-                    overrideParameters: '-factoryName $(uat_datafactoryname)'
+                    overrideParameters: '-factoryName $(adfuatname) -dev_blob_linked_service_properties_typeProperties_connectionString_secretName $(UATsecretname) -AzureKeyVaultcode_properties_typeProperties_baseUrl $(UATkeyurl)'
                     deploymentMode: Incremental
 
 
