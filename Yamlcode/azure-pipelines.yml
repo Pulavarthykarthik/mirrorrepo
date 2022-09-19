@@ -89,14 +89,14 @@ stages:
                   inputs:
                     secureFile: ARMTemplateParametersForFactoryuat.json
                 - pwsh: |
-                    Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory"
+                    Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
                     Remove-Item ARMTemplateParametersForFactory.json
                     Rename-Item -Path ARMTemplateParametersForFactoryuat.json -NewName ARMTemplateParametersForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory
+                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
                   displayName: Replace ARM Template Parameters
                 - pwsh: |
-                    (Get-Content $(Pipeline.Workspace)/datafactory/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/ARMTemplateForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory
+                    (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
+                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
                   displayName: Replace Managed Identity to System Assigned
 
                 - task: AzureResourceManagerTemplateDeployment@3
