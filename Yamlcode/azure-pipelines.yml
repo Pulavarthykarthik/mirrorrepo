@@ -98,6 +98,15 @@ stages:
                     (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
                   workingDirectory: $(Pipeline.Workspace)/datafactory/application
                   displayName: Replace Managed Identity to System Assigned
+        #stop Trigger
+                - task: AzurePowerShell@5
+                  displayName: Stop Trigger
+                  inputs: 
+                    azureSubscription: $(myserviceconnection)
+                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+                    ScriptArguments: "-armTemplate 'ARMTemplateForFactory.json' -ResourceGroupName $(rguatname) -DataFactoryName $(uatdfname) -predeployment $true"
+                    azurePowerShellVersion: 'LatestVersion'
 
                 - task: AzureResourceManagerTemplateDeployment@3
                   displayName: 'Deploying to UAT RG task'
@@ -112,7 +121,15 @@ stages:
                     csmFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json'
                     csmParametersFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateParametersForFactory.json'
                     deploymentMode: Incremental
-
+        #start Trigger
+                - task: AzurePowerShell@5
+                  displayName: Start Trigger
+                  inputs: 
+                    azureSubscription: $(myserviceconnection)
+                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+                    ScriptArguments: "-armTemplate 'ARMTemplateForFactory.json' -ResourceGroupName $(rguatname) -DataFactoryName $(uatdfname) -predeployment $false"
+                    azurePowerShellVersion: 'LatestVersion'
 
                     
             
