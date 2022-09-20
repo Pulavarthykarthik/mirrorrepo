@@ -60,6 +60,12 @@ stages:
               artifact: 'datafactory'
               publishLocation: 'pipeline'
 
+      # To Know folder structure
+          - powershell: |
+              tree "$(build.artifactstagingdirectory)" /F
+            displayName: "Treeview of build.artifactstagingdirectory"
+
+
 #release pipeline
   - stage: 'UAT'
     displayName: 'UAT deploy'
@@ -85,7 +91,7 @@ stages:
         #to know folder structure
                 - powershell: |
                     tree "$(Pipeline.Workspace)" /F
-                  displayName: '2 Treeview of Pipeline.Workspace'
+                  displayName: 'Treeview of Pipeline.Workspace'
 
                 - task: DownloadSecureFile@1
                   name: adfparameter
