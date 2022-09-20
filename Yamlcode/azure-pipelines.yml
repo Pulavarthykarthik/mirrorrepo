@@ -82,6 +82,10 @@ stages:
                     artifactName: 'datafactory'
                     targetPath: '$(Pipeline.Workspace)'
                   displayName: Downloading Artifact
+        #to know folder structure
+                - powershell: |
+                    tree "$(Pipeline.Workspace)" /F
+                  displayName: '2 Treeview of Pipeline.Workspace'
 
                 - task: DownloadSecureFile@1
                   name: adfparameter
