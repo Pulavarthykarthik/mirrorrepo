@@ -2,7 +2,6 @@ trigger:
 - main
 - develop
 
- 
 
 pool:
   vmImage: 'windows-latest'
@@ -94,6 +93,7 @@ stages:
         #to know folder structure
                 - powershell: |
                     tree "$(Pipeline.Workspace)" /F
+                    Get-Content -Path $(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1
                   displayName: 'Treeview of Pipeline.Workspace'
 
                 - task: DownloadSecureFile@1
