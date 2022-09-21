@@ -1,0 +1,25 @@
+{
+	"name": "devtrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pipeline1",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Hour",
+				"interval": 15,
+				"startTime": "2022-09-21T00:55:00",
+				"endTime": "2022-09-30T00:55:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
