@@ -1,0 +1,17 @@
+{
+	"name": "demotrigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/inputfile/blobs/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9/resourceGroups/daa-pract-adf-dev/providers/Microsoft.Storage/storageAccounts/daastradfdev",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}
