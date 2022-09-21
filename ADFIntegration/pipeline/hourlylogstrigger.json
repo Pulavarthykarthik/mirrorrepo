@@ -1,0 +1,6 @@
+{
+	"name": "hourlylogstrigger",
+	"properties": {
+		"annotations": []
+	}
+}
