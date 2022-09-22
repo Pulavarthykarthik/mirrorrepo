@@ -118,7 +118,7 @@ stages:
                     azureSubscription: $(myserviceconnection)
                     workingDirectory: $(Pipeline.Workspace)/datafactory/application
                     ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: "-armTemplate 'ARMTemplateForFactory.json' -ResourceGroupName $(resourcegroup) -DataFactoryName $(adfname) -predeployment $true"
+                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rguatname) -DataFactoryName $(uat_datafactoryname) -predeployment $true -deleteDeployment $false
                     azurePowerShellVersion: 'LatestVersion'
 
                 - task: AzureResourceManagerTemplateDeployment@3
@@ -141,7 +141,7 @@ stages:
                     azureSubscription: $(myserviceconnection)
                     workingDirectory: $(Pipeline.Workspace)/datafactory/application
                     ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: "-armTemplate 'ARMTemplateForFactory.json' -ResourceGroupName $(resourcegroup) -DataFactoryName $(adfname) -predeployment $false"
+                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rguatname) -DataFactoryName $(uat_datafactoryname) -predeployment $false -deleteDeployment $true
                     azurePowerShellVersion: 'LatestVersion'
 
                     
