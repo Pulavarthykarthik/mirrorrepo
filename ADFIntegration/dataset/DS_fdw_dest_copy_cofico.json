@@ -1,0 +1,36 @@
+{
+	"name": "DS_fdw_dest_copy_cofico",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FILE_SYSTEM": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "FDW/FDW_Daily_Incremental"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('raw/cofico/',dataset().run_date,'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().FILE_SYSTEM",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

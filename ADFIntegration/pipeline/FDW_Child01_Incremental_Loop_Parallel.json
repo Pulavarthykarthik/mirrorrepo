@@ -1,0 +1,246 @@
+{
+	"name": "FDW_Child01_Incremental_Loop_Parallel",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup_Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DS_fdw_table_config_load",
+						"type": "DatasetReference",
+						"parameters": {
+							"json_directory_path": {
+								"value": "@pipeline().parameters.load_directory_path",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "isActive Flag",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup_Tables').output.value",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().isActive,1 )",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Parallel Run",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "isActive Flag",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('isActive Flag').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Table already processed",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlDWSource",
+									"sqlReaderQuery": {
+										"value": "@concat('\nDECLARE @v_start_date date=''',pipeline().parameters.start_date,'''\nDECLARE @v_status varchar(20)\n\nSELECT TOP 1\n@v_status =''yes'' FROM ',pipeline().parameters.watermark_schema_name,'.',pipeline().parameters.watermark_table_name,'\nWHERE ADW_TABLE=''',item().table,''' \nAND WATERMARK_DT_UTC=@v_start_date\nAND FILE_EXISTS_STATUS = ''True''\n\n\nIF @v_status is NULL\n  set @v_status=''no''\n\nSELECT @v_status as is_done\n  \n'  )",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"dataset": {
+									"referenceName": "DS_fdw_watermark_tbl",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": true
+							}
+						},
+						{
+							"name": "Run if table is not already run",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Table already processed",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Table already processed').output.firstRow.is_done,'no' )",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "if_truncate_and_reload",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "FDW_Child02_Truncate_or_Incremental_Load",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"watermark_table_name": {
+													"value": "@pipeline().parameters.watermark_table_name",
+													"type": "Expression"
+												},
+												"watermark_schema_name": {
+													"value": "@pipeline().parameters.watermark_schema_name",
+													"type": "Expression"
+												},
+												"container_name": {
+													"value": "@pipeline().parameters.container_name",
+													"type": "Expression"
+												},
+												"extract_folder_name": {
+													"value": "@pipeline().parameters.extract_folder_name",
+													"type": "Expression"
+												},
+												"start_date": {
+													"value": "@pipeline().parameters.start_date",
+													"type": "Expression"
+												},
+												"watermark_sp_name": {
+													"value": "@pipeline().parameters.watermark_sp_name",
+													"type": "Expression"
+												},
+												"config_folder": {
+													"value": "@pipeline().parameters.config_folder",
+													"type": "Expression"
+												},
+												"schema_name": {
+													"value": "@pipeline().parameters.schema_name",
+													"type": "Expression"
+												},
+												"load_type": {
+													"value": "@item().pipeline",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"notebook_path": {
+													"value": "@item().notebook_path",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"watermark_table_name": {
+				"type": "string",
+				"defaultValue": "WATERMARK_TBL"
+			},
+			"watermark_schema_name": {
+				"type": "string",
+				"defaultValue": "ADW_CTRL"
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "adls-fdw-edw"
+			},
+			"extract_folder_name": {
+				"type": "string",
+				"defaultValue": "adls-fdw-edw-raw-cofico"
+			},
+			"load_directory_path": {
+				"type": "string",
+				"defaultValue": "fdw_edw/pipeline-table-config/load6"
+			},
+			"start_date": {
+				"type": "string"
+			},
+			"watermark_sp_name": {
+				"type": "string",
+				"defaultValue": "sp_WaterMark_TBL"
+			},
+			"config_folder": {
+				"type": "string",
+				"defaultValue": "fdw_edw"
+			},
+			"schema_name": {
+				"type": "string",
+				"defaultValue": "ADW_FDW_EDW"
+			}
+		},
+		"variables": {
+			"v_is_sequence": {
+				"type": "Boolean",
+				"defaultValue": true
+			}
+		},
+		"folder": {
+			"name": "FDW/FDW_Daily_Incremental"
+		},
+		"annotations": []
+	}
+}

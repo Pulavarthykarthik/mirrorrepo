@@ -1,0 +1,28 @@
+{
+	"name": "Uncompress_NBO_hist",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "NBO"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('cps-edw/prod/data', '/year=',formatDateTime(adddays(utcnow(),0),'yyyy'), '/month=',formatDateTime(adddays(utcnow(),0),'MM'),'/day=',formatDateTime(adddays(utcnow(),0),'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

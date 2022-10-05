@@ -1,0 +1,909 @@
+{
+	"name": "ARAAS_Main_Extract_Pipeline_manual",
+	"properties": {
+		"activities": [
+			{
+				"name": "For_Loop",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('jsonlist')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "5thofeverymonth",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'M'),equals(item().daysub,\n5))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "5thofeverymonthyextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filename,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filepath,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().daysub,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Occurrence,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().routine,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().filecheck,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().SPPARM,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().delimiter,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Quote,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(utcNow())),1),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),4))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),2),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),5))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),3),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),4))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),4),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),3))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),5),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),2))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),6),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),1))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n\nif(and(equals(dayOfWeek(startOfMonth(utcNow())),0),equals(formatDateTime(concat(formatDateTime(utcNow(),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(utcNow())),6))),'yyyy-MM-dd'),formatDateTime(utcNow(),'yyyy-MM-dd'))),\nitem().Quote,\n'0')\n)\n)\n)\n)\n)\n)\n",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nvariables('jsonlist'),\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\npipeline().parameters.previous_date,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(\nand(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1),\nequals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),4),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),3))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),5),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),2))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),1))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n\nif(and(equals(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),0),equals(formatDateTime(concat(formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM'),'-',string(add(dayOfWeek(startOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')))),6))),'yyyy-MM-dd'),formatDateTime(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd')),'yyyy-MM-dd'))),\nitem().Header,\n'0')\n)\n)\n)\n)\n)\n)",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "daily",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'D'),equals(item().daysub,\n7))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "dailyextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(equals(item().daysub,7)\n,item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(equals(item().daysub,7)\n,item().filepath,take(array(''),0))",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(equals(item().daysub,7)\n,item().daysub,take(array(''),0))",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(equals(item().daysub,7)\n,item().Occurrence,take(array(''),0))",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(equals(item().daysub,7)\n,item().routine,take(array(''),0))",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(equals(item().daysub,7)\n,item().filecheck,take(array(''),0))",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(equals(item().daysub,7)\n,item().SPPARM,take(array(''),0))",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(equals(item().daysub,7)\n,item().delimiter,take(array(''),0))",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(equals(item().daysub,7)\n,item().Quote,take(array(''),0))",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(equals(item().daysub,7)\n,item().Quote,take(array(''),0))",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(equals(item().daysub,7)\n,variables('jsonlist'),take(array(''),0))",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(equals(item().daysub,7)\n,pipeline().parameters.previous_date,take(array(''),0))",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(equals(item().daysub,7)\n,bool(item().Header),take(array(''),0))",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "1stofeverymonth",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'M'),equals(item().daysub,\n1))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "1stofeverymonthextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Escapechar,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "dailyexceptsaturday",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'D'),equals(item().daysub,\n6))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "dailyextractexceptsaturdays",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(and(equals(item().daysub,6),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6))),item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "weekos",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'W'),equals(item().daysub,6))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "weeklysaturdayextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0),item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "weekom",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'W'),equals(item().daysub,1))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "weeklymondayextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),1),item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "dailymondaytofriday",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'D'),equals(item().daysub,5))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "dailyextractmondaytofriday",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(and(not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6)),not(equals(dayOfWeek(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),0))),item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "6thofeverymonth",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,\n'M'),equals(item().daysub,\n6))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "6thofeverymonthyextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().Occurrence,'0')",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),variables('jsonlist'),'0')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),pipeline().parameters.previous_date,'0')",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(equals(dayOfMonth(if(equals(variables('jsonlist'),json('[]')),formatDateTime(utcNow(),'yyyy-MM-dd'),subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'))),6),bool(item().Header),'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Copy_files",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().schema,'COPY'),and(not(equals(dayOfWeek(utcNow()),6)),and(equals(item().routine,'OC65973'),equals(item().Occurrence,'D'))))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Copy_files_other",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Copy_extract_pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filepath": {
+													"value": "@item().filepath",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@item().filename",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@item().routine",
+													"type": "Expression"
+												},
+												"Occurrence": {
+													"value": "@item().Occurrence",
+													"type": "Expression"
+												},
+												"Escape": {
+													"value": "@item().Escape",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@item().Quote",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@item().delimiter",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@item().Header",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@pipeline().parameters.previous_date",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						},
+						{
+							"name": "Quarterly",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(equals(item().Occurrence,'Q'),not(equals(item().schema,'COPY')))",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "quarterlyextract",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "ARAAS_Archival_Pipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"filename": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().filename,'0')",
+													"type": "Expression"
+												},
+												"filepath": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().filepath,'0')",
+													"type": "Expression"
+												},
+												"daysub": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().daysub,'0')",
+													"type": "Expression"
+												},
+												"occurance": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().Occurrence,'0')\n",
+													"type": "Expression"
+												},
+												"routine": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().routine,'0')",
+													"type": "Expression"
+												},
+												"filecheck": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().filecheck,'0')",
+													"type": "Expression"
+												},
+												"SPPARM": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().SPPARM,'0')",
+													"type": "Expression"
+												},
+												"delimiter": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().delimiter,'0')",
+													"type": "Expression"
+												},
+												"Escapechar": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().Quote,'0')",
+													"type": "Expression"
+												},
+												"Quote": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().Quote,'0')",
+													"type": "Expression"
+												},
+												"jsonlist": {
+													"value": "@variables('jsonlist')",
+													"type": "Expression"
+												},
+												"previous_date": {
+													"value": "@pipeline().parameters.previous_date",
+													"type": "Expression"
+												},
+												"Header": {
+													"value": "@if(or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0101'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0104'),or(equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0107'),equals(formatDateTime(subtractFromTime(utcNow(),pipeline().parameters.previous_date,'Day','yyyy-MM-dd'),'ddMM'),'0110'))))\n,item().Header,'0')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "DLR_MSTR_Population",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": "select \n\tB.db_schema as schema1,\n\tB.SPNAME as routine,\n\tB.filepath,\n\tB.filename,\n\tB.archivepath,\n\tB.daysub,\n\tB.occurrence,\n\tB.filecheck,\n\tB.SPPARM,\n\tB.destination_file_name as axwayFileName,\n\tB.axway_path as axwaypath,\n\tB.axway_server as axwayserver,\n\tB.axway_user_id as axwayuser,\n\tB.escape_char as Escapechar,\n\tB.delimiter,\n\tB.Quote,\n\tB.header \nfrom [ADW_PDW_EDW_STG].[PIPELINE_DATA_LOG] A join [ADW_PDW_EDW_STG].[ASBD_MASTER] B\non A.SPNAME = B.SPNAME AND A.FILENAME = B.FILENAME\nWHERE EXECUTIONDATE = (SELECT CAST(GETDATE() AS DATE)) AND UPPER(STATUS) = 'FAILED'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AzureSynapseAnalyticsSQLDB",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Lookup1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "jsonlist",
+					"value": {
+						"value": "@activity('Lookup1').output.value",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "DLR_MSTR_Population",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/ARAAS/ASBD/DLR_MSTR_Population"
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"previous_date": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"jsonlist": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "ARAAS"
+		},
+		"annotations": []
+	}
+}

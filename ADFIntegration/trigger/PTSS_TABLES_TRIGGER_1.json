@@ -1,0 +1,32 @@
+{
+	"name": "PTSS_TABLES_TRIGGER_1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_warranty_PTSS",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-08-30T14:26:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						40
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

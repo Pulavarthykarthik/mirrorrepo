@@ -1,0 +1,11 @@
+{
+	"name": "AR_ADW2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDW",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=xto-ms-us--sqlsrv-edwdev.database.windows.net;Initial Catalog=xtomsusedwdevsqldwh2"
+		}
+	}
+}

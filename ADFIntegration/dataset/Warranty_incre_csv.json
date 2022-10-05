@@ -1,0 +1,36 @@
+{
+	"name": "Warranty_incre_csv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"source_container_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "part-00000-tid-9182558120231492162-c9a0fbd3-3556-4c81-9297-e9a914f4595b-14858-1-c000.csv",
+				"folderPath": "processed/wrnty_opr/COST_DIST_UPD_2/year=2022/month=07/day=21",
+				"fileSystem": {
+					"value": "adls-wrnty-edw",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": "\u0001",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"nullValue": "null",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

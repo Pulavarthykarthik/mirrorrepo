@@ -1,0 +1,115 @@
+{
+	"name": "mra_child_run_serial",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEachSerially",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lkp_Batch_config",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lkp_Batch_config').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "execute_tables_in_serial",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "MRA_incremental_child_lookup_table_status_copy1",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"schema_name": {
+										"value": "@item().schema",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item().table",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@item().container",
+										"type": "Expression"
+									},
+									"notebook_path": {
+										"value": "@item().notebook_path",
+										"type": "Expression"
+									},
+									"pipeline": {
+										"value": "@item().pipeline",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Lkp_Batch_config",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"wildcardFileName": {
+								"value": "@concat(pipeline().parameters.batch_name,'.json')",
+								"type": "Expression"
+							},
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "mra_batch_config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			},
+			"batch_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "MRA/MRA Daily incremental"
+		},
+		"annotations": []
+	}
+}

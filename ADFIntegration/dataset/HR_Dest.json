@@ -1,0 +1,251 @@
+{
+	"name": "HR_Dest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HR"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ID_EMPL",
+				"type": "varchar"
+			},
+			{
+				"name": "DTE_EFF",
+				"type": "date"
+			},
+			{
+				"name": "DES_EMP_ACTN",
+				"type": "varchar"
+			},
+			{
+				"name": "AMT_ANNL_PAY",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "DTE_BRTH",
+				"type": "date"
+			},
+			{
+				"name": "NAM_BRTH_PLCE",
+				"type": "varchar"
+			},
+			{
+				"name": "NAM_EMPL_RES_CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "DTE_CO_SR",
+				"type": "date"
+			},
+			{
+				"name": "CDE_CMPNY",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CMPNY",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_CTRY",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CNTY",
+				"type": "varchar"
+			},
+			{
+				"name": "AMT_DLY_PAY",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "IND_DSBLD",
+				"type": "char"
+			},
+			{
+				"name": "IND_DSBLD_VET",
+				"type": "char"
+			},
+			{
+				"name": "DTE_DTH",
+				"type": "date"
+			},
+			{
+				"name": "NUM_EMP_RCD",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "CDE_EMPL_ACTV_STAT",
+				"type": "char"
+			},
+			{
+				"name": "DES_EMP_TYP",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_ETHNC_GR",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_FLSA_STAT",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_FT_PT",
+				"type": "varchar"
+			},
+			{
+				"name": "IND_FTS",
+				"type": "char"
+			},
+			{
+				"name": "CDE_GEN",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_GRD",
+				"type": "char"
+			},
+			{
+				"name": "CDE_HI_EDUC",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_HLDY_SCHD",
+				"type": "varchar"
+			},
+			{
+				"name": "AMT_HR_RATE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "CDE_REG_TEMP",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_JOB",
+				"type": "varchar"
+			},
+			{
+				"name": "NAM_JOB_TITLE",
+				"type": "varchar"
+			},
+			{
+				"name": "NAM_WRKNG_LOC",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_MRTL_STAT",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_EMPL_GNRTN",
+				"type": "varchar"
+			},
+			{
+				"name": "NAM_MB_GM_AREA",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_MB_VP",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_MLTRY_STAT",
+				"type": "char"
+			},
+			{
+				"name": "AMT_MTH_RATE",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 3
+			},
+			{
+				"name": "DTE_POSN_ENTRY",
+				"type": "date"
+			},
+			{
+				"name": "NUM_POSN",
+				"type": "varchar"
+			},
+			{
+				"name": "CDE_POST",
+				"type": "varchar"
+			},
+			{
+				"name": "DES_REAS",
+				"type": "varchar"
+			},
+			{
+				"name": "DTE_RHR",
+				"type": "date"
+			},
+			{
+				"name": "DTE_SER",
+				"type": "date"
+			},
+			{
+				"name": "DTE_STRT",
+				"type": "date"
+			},
+			{
+				"name": "NAM_ST",
+				"type": "varchar"
+			},
+			{
+				"name": "NUM_STD_HR",
+				"type": "decimal",
+				"precision": 6,
+				"scale": 2
+			},
+			{
+				"name": "DTE_TERMIN",
+				"type": "date"
+			},
+			{
+				"name": "IND_USA_TWO_RACE",
+				"type": "char"
+			},
+			{
+				"name": "IND_USWE",
+				"type": "char"
+			},
+			{
+				"name": "DTS_CREA",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_LAST_UPDT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_LAST_UPDT_USER",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_HR_PeopleSoft",
+			"table": "EMP"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

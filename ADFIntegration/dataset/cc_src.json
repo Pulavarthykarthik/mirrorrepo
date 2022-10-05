@@ -1,0 +1,26 @@
+{
+	"name": "cc_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "connected_car"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "DAPS+AfterSales+Xentry+2021-03-05.zip",
+				"folderPath": "MBUSA/DAPS/prod/DAPS/AfterSales/Xentry/2021-03-05"
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

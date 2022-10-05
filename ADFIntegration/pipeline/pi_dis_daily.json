@@ -1,0 +1,113 @@
+{
+	"name": "pi_dis_daily",
+	"properties": {
+		"description": "This pipeline loads the Daily DIS data into ADW tables. Sequence in which the pipeline needs to be executed.\n1. Region\n2. Market\n3. Market Area",
+		"activities": [
+			{
+				"name": "Read DIS JSON File",
+				"description": "This will read the JSON files from the adls-dealer-dis folder.",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "dis-opr",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "dis_table_config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Execute the DIS Pipeline",
+				"description": "This will execute the pipeline based on each Json file read from the datalake folder.",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Read DIS JSON File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Read DIS JSON File').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Truncate and Reload Pipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pi_dis_daily_truncate_reload",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"table_name": {
+										"value": "@item().table",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@item().schema",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@item().container",
+										"type": "Expression"
+									},
+									"notebook_path": {
+										"value": "@item().notebook_path",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "0001-01-01"
+			}
+		},
+		"folder": {
+			"name": "DIS"
+		},
+		"annotations": []
+	}
+}

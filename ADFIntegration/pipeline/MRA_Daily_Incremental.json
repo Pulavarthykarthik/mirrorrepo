@@ -1,0 +1,155 @@
+{
+	"name": "MRA_Daily_Incremental",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup_Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "MRA_Table_Config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Kickoff Pipelines",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup_Tables').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "If Truncate and Reload",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().pipeline,'truncate_reload')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Execute Incremental Insert Update Pipeline",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "MRA_incremental_insert_update",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "@item().schema",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"container_name": {
+													"value": "@item().container",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@utcnow('yyyy-MM-dd')",
+													"type": "Expression"
+												},
+												"notebook_path": {
+													"value": "@item().notebook_path",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "execute_truncate_reload",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "MRA_incremental_truncate_reload",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "ADW_DMS_MRA",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"container_name": {
+													"value": "@item().container",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@utcnow('yyyy-MM-dd')",
+													"type": "Expression"
+												},
+												"notebook_path": {
+													"value": "@item().notebook_path",
+													"type": "Expression"
+												},
+												"contains_pii": {
+													"value": "@item()?.contains_pii",
+													"type": "Expression"
+												},
+												"config_folder": "pdw-edw"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "MRA"
+		},
+		"annotations": []
+	}
+}

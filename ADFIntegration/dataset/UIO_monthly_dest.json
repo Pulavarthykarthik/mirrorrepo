@@ -1,0 +1,32 @@
+{
+	"name": "UIO_monthly_dest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"FILE_SYSTEM": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@concat('UIO/UIO_RAW/year=',substring(dataset().run_date,0,4),'/month=',substring(dataset().run_date,5,2),'/day=',substring(dataset().run_date,8,2))",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().FILE_SYSTEM",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

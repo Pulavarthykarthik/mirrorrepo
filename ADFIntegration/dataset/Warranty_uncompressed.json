@@ -1,0 +1,27 @@
+{
+	"name": "Warranty_uncompressed",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"folderPath": {
+					"value": "@{concat('wrnty-edw/prod/data','/year=',formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'yyyy'),'/month=',formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'MM'),'/day=',formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	}
+}

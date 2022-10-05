@@ -76,10 +76,7 @@
 							"typeProperties": {
 								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/DQF_RUN",
 								"baseParameters": {
-									"Date": {
-										"value": "@formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd')",
-										"type": "Expression"
-									},
+									"Date": "@formatDateTime(adddays(utcnow(),-1),'yyyy-MM-dd')",
 									"table_name": {
 										"value": "@item()",
 										"type": "Expression"
@@ -229,8 +226,6 @@
 		"folder": {
 			"name": "VDW"
 		},
-		"annotations": [],
-		"lastPublishTime": "2022-10-05T09:59:19Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

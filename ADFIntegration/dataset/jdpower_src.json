@@ -1,0 +1,27 @@
+{
+	"name": "jdpower_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "jdpower"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('cps-edw/prod/data', '/year=',formatDateTime(adddays(utcnow(),-2),'yyyy'), '/month=',formatDateTime(adddays(utcnow(),-2),'MM'),'/day=',formatDateTime(adddays(utcnow(),-2),'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

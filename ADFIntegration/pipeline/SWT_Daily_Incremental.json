@@ -1,0 +1,380 @@
+{
+	"name": "SWT_Daily_Incremental",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get_Metadata",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Kick_Off_Seq_Pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "SWT_json",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Kick_Off_Child_Pipeline",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Metadata').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Check_If_Truncate_And_Reload",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().pipeline,'truncate_reload')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Incremental_Load",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SWT_Incremental_Load",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "@item().schema",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@formatDateTime(variables('run_date'),'yyyy-MM-dd HH:mm:ss')\n",
+													"type": "Expression"
+												},
+												"container": {
+													"value": "@item().container",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Truncate_And_Reload",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SWT_Truncate_And_Reload",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "@item().schema",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@formatDateTime(variables('run_date'),'yyyy-MM-dd HH:mm:ss')",
+													"type": "Expression"
+												},
+												"container": {
+													"value": "@item().container",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Extract_Zip_Files_Daily",
+				"description": "Fetching the daily data zip file from Daimler ADLS and extract it over reservoir ADLS",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set_Run_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SWT_compressed",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@variables('run_date')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SWT_uncompressed",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@variables('run_date')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Get_Metadata_Sequential",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Extract_Zip_Files_Daily",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "SWT_json_seq",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Kick_Off_Seq_Pipeline",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_Metadata_Sequential",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get_Metadata_Sequential').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Check_If_Truncate_And_Reload_Seq",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().pipeline,'truncate_reload')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "Incremental_Load_Seq",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SWT_Incremental_Load",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "@item().schema",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@formatDateTime(variables('run_date'),'yyyy-MM-dd HH:mm:ss')\n",
+													"type": "Expression"
+												},
+												"container": {
+													"value": "@item().container",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Truncate_And_Reload_Seq",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "SWT_Truncate_And_Reload",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": {
+													"value": "@item().schema",
+													"type": "Expression"
+												},
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@formatDateTime(variables('run_date'),'yyyy-MM-dd HH:mm:ss')\n",
+													"type": "Expression"
+												},
+												"container": {
+													"value": "@item().container",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set_Run_Date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "run_date",
+					"value": {
+						"value": "@formatDateTime(\n    coalesce(\n            pipeline().parameters.run_date_param,\n            convertTimeZone(\n                utcNow(),\n                'UTC',\n                'Eastern Standard Time'\n            )\n    ),\n'yyyy-MM-dd'\n)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"run_date_param": {
+				"type": "string",
+				"defaultValue": null
+			}
+		},
+		"variables": {
+			"run_date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "SWT_Data_Ingestion"
+		},
+		"annotations": []
+	}
+}

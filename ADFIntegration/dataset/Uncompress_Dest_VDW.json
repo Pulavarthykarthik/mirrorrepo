@@ -1,0 +1,30 @@
+{
+	"name": "Uncompress_Dest_VDW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "VDW"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('raw/edw/',formatDateTime(dataset().date,'yyyy-MM-dd'))}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-vista-edw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

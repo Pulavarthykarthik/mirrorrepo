@@ -1,0 +1,26 @@
+{
+	"name": "Uncompress_Test_HR",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HR"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "DAPS+HR+PS+2021-03-01.zip",
+				"folderPath": "MBUSA/DAPS/prod/DAPS/HR/PS/2021-03-01"
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

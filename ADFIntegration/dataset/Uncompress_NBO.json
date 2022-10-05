@@ -1,0 +1,28 @@
+{
+	"name": "Uncompress_NBO",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "NBO"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"folderPath": {
+					"value": "@{concat('MBUSA/DAPS/prod/DAPS/MS/NBO/',formatDateTime(utcnow(),'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

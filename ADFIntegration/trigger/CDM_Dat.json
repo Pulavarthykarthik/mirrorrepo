@@ -1,0 +1,44 @@
+{
+	"name": "CDM_Dat",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "cdm_dat",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2021-01-25T17:46:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						10
+					],
+					"monthDays": [
+						9,
+						10,
+						11,
+						12,
+						23,
+						24,
+						25,
+						26,
+						27,
+						13
+					]
+				}
+			}
+		}
+	}
+}

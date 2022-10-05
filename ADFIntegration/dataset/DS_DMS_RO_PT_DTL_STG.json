@@ -1,0 +1,136 @@
+{
+	"name": "DS_DMS_RO_PT_DTL_STG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_PROD_MRA_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "DMS_RO_PT_DTL_STG-2019-12-04.txt",
+				"folderPath": "MRA/prod/DMS_RO_PT_DTL_STG/2019-12-04"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": [
+			{
+				"name": "ID_DLR",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_RO",
+				"type": "String"
+			},
+			{
+				"name": "DTE_RO_CLOS_ORGNL",
+				"type": "String"
+			},
+			{
+				"name": "NUM_PT_LIN_ITM_RO",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_LIN_ITM_RO",
+				"type": "String"
+			},
+			{
+				"name": "CDE_REC_TYP_STG",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_PT_RO",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_PT_CST",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_PT_MSRP",
+				"type": "String"
+			},
+			{
+				"name": "QTY_DMS_PT_SLD_RO",
+				"type": "String"
+			},
+			{
+				"name": "IND_PT_DTL_CHD_RO",
+				"type": "String"
+			},
+			{
+				"name": "CDE_DMS_RO_PAY_TYP",
+				"type": "String"
+			},
+			{
+				"name": "CDE_VND_RO_PAY_TYP",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_PT_RO",
+				"type": "String"
+			},
+			{
+				"name": "IND_MBUSA_PRT_NUM",
+				"type": "String"
+			},
+			{
+				"name": "NUM_PART_DB",
+				"type": "String"
+			},
+			{
+				"name": "NAM_INTNL_TRNSL_PT",
+				"type": "String"
+			},
+			{
+				"name": "DES_DMS_PT_RO",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_PT_MFR",
+				"type": "String"
+			},
+			{
+				"name": "NAM_MBUSA_PT_MFR",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_TOT_CST",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_TOT_PRC",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_UNIT_PRC",
+				"type": "String"
+			},
+			{
+				"name": "DTS_CREA",
+				"type": "String"
+			},
+			{
+				"name": "ID_CREA_USER",
+				"type": "String"
+			},
+			{
+				"name": "DTS_LAST_UPDT",
+				"type": "String"
+			},
+			{
+				"name": "ID_LAST_UPDT_USER",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

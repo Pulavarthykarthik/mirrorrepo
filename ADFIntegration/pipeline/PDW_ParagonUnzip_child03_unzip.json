@@ -1,0 +1,382 @@
+{
+	"name": "PDW_ParagonUnzip_child03_unzip",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set FolderExists",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "vFolderExists",
+					"value": {
+						"value": "@string(activity('Get Metadata Folder').output?.exists)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get Metadata Folder",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "Unzip_Paragon",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_pdw_dest_metadata_Paragon_delta",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"container_name": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists",
+						"itemType",
+						"itemName"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			},
+			{
+				"name": "sp_WaterMark_dailyExtracts",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata Folder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_CTRL_STG].[sp_WaterMark_TBL]",
+					"storedProcedureParameters": {
+						"ADW_TABLE": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"WATERMARK_DT_UTC": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FILE_EXISTS_STATUS": {
+							"value": {
+								"value": "@string(activity('Get Metadata Folder').output?.exists)",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ADW_SCHEMA": {
+							"value": null,
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"SOURCE_FILE_NAME": {
+							"value": {
+								"value": "@activity('Get Metadata Folder').output?.itemName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "@pipeline()?.TriggeredByPipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_TYPE": {
+							"value": {
+								"value": "@pipeline().TriggerType",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_NAME": {
+							"value": {
+								"value": "@pipeline().TriggerName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CONTAINER_NAME": {
+							"value": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ROW_COUNT": {
+							"value": {
+								"value": "@activity('Unzip_Paragon').output?.filesWritten",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"EXCEPTIONS": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "sp_WaterMark_dailyExtracts_failure",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Unzip_Paragon",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_CTRL_STG].[sp_WaterMark_TBL]",
+					"storedProcedureParameters": {
+						"ADW_TABLE": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"WATERMARK_DT_UTC": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FILE_EXISTS_STATUS": {
+							"value": null,
+							"type": "String"
+						},
+						"ADW_SCHEMA": {
+							"value": null,
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"SOURCE_FILE_NAME": {
+							"value": null,
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "@pipeline()?.TriggeredByPipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_TYPE": {
+							"value": {
+								"value": "@pipeline().TriggerType",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_NAME": {
+							"value": {
+								"value": "@pipeline().TriggerName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CONTAINER_NAME": {
+							"value": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ROW_COUNT": {
+							"value": {
+								"value": "@activity('Unzip_Paragon').output?.filesWritten",
+								"type": "Expression"
+							},
+							"type": "Int32"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "@activity('Unzip_Paragon').output?.errors[0].Message",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Unzip_Paragon",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 2,
+					"retryIntervalInSeconds": 4000,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "domain_paragon_DELTA",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "paragon_reservoir_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_name": "adls-pdw-edw",
+							"run_date": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"vFolderExists": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Delta_watermark/PDW_Daily_Incremental"
+		},
+		"annotations": []
+	}
+}

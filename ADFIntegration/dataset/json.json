@@ -1,0 +1,22 @@
+{
+	"name": "json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ARAAS"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "ASBD/Config",
+				"fileSystem": "adls-araas"
+			}
+		},
+		"schema": {}
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"name": "cc_dest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "connected_car"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "xentry/2021-03-01",
+				"fileSystem": "adls-aftersales-xentry"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

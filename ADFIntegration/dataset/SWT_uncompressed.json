@@ -1,0 +1,30 @@
+{
+	"name": "SWT_uncompressed",
+	"properties": {
+		"description": "Daily Unzipped data will be stored here",
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "SWT_data_ingestion"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('raw/',formatDateTime(dataset().run_date,'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-vehicle-swt"
+			}
+		}
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "Uncompress_dest_NBO_v2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "NBO"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('nbo/', formatDateTime(utcnow(), 'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "dp-nbo"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -57,8 +57,6 @@
 		"folder": {
 			"name": "SWT_Data_Ingestion"
 		},
-		"annotations": [],
-		"lastPublishTime": "2022-10-05T09:59:19Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

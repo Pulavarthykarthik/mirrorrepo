@@ -1,0 +1,603 @@
+{
+	"name": "AzureSynapseAnalyticsTable3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ETC"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "KEY_DLR_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_MBUSA_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_FTL_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_VAN_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_SMRTO_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_SMRT_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_PC_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_PC_SO_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_VAN_SO_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_ACTV_SMRT_SO_DLR",
+				"type": "char"
+			},
+			{
+				"name": "ADR_LINE_1",
+				"type": "char"
+			},
+			{
+				"name": "ADR_LINE_2",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CITY",
+				"type": "char"
+			},
+			{
+				"name": "ADR_ST_CDE",
+				"type": "char"
+			},
+			{
+				"name": "ADR_ZIP",
+				"type": "char"
+			},
+			{
+				"name": "ADR_ZIP_EXT",
+				"type": "char"
+			},
+			{
+				"name": "ID_GLB_DLR",
+				"type": "char"
+			},
+			{
+				"name": "ID_PREV_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_DLR_PEND_SELL",
+				"type": "char"
+			},
+			{
+				"name": "IND_HST_DLR",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR_CUR_BUY_SEL",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR_PRV_BUY_SEL",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR_HST",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR_HST_CHAIN",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR_HST_BUY_SEL",
+				"type": "char"
+			},
+			{
+				"name": "ID_PRV_HST_BUY_SEL",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MAJ_MKT_GRP",
+				"type": "char"
+			},
+			{
+				"name": "DES_MAJ_MKT_GRP",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DLR_SLS_LIKSZ",
+				"type": "char"
+			},
+			{
+				"name": "DES_DLR_SLS_LIKSZ",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DLR_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "DES_DLR_TYP",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DLR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DO_BUSN_AS",
+				"type": "char"
+			},
+			{
+				"name": "DTE_DLR_OPEN_BUSN",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CDE_DLR_ST",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ABBR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ACCT_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "CDE_BILL_TERM",
+				"type": "char"
+			},
+			{
+				"name": "CDE_NIEL_DMA",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MBC_DISTR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PDC",
+				"type": "char"
+			},
+			{
+				"name": "ID_VPC",
+				"type": "char"
+			},
+			{
+				"name": "DTE_APRVL",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_FRAN_TERMIN",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DES_FRAN_TERMIN",
+				"type": "char"
+			},
+			{
+				"name": "IND_IDG_MBR",
+				"type": "char"
+			},
+			{
+				"name": "DES_MBNET_BILL_TYP",
+				"type": "char"
+			},
+			{
+				"name": "NUM_UCC_FED_ID",
+				"type": "char"
+			},
+			{
+				"name": "DTE_ANNIV",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "IND_NADA",
+				"type": "char"
+			},
+			{
+				"name": "DES_NCM_CODE",
+				"type": "char"
+			},
+			{
+				"name": "QTY_AOI_VEH_REGIS",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CDE_EXP_STMT_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "IND_MBC",
+				"type": "char"
+			},
+			{
+				"name": "IND_NETSTAR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DLR_MGMT_SYS",
+				"type": "char"
+			},
+			{
+				"name": "IND_IDG_LT_MBR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_NIEL_DMA",
+				"type": "char"
+			},
+			{
+				"name": "IND_SAT_SRV",
+				"type": "char"
+			},
+			{
+				"name": "CDE_SRV_STATUS",
+				"type": "char"
+			},
+			{
+				"name": "NUM_PIDW",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NUM_PIDN",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "TME_SAT_SRV_OPEN",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "TME_SAT_SRV_CLOS",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "PCT_GEO_TAX_RATE",
+				"type": "decimal",
+				"precision": 7,
+				"scale": 4
+			},
+			{
+				"name": "CDE_GEO_TAX_JURIS",
+				"type": "char"
+			},
+			{
+				"name": "IND_OVRNIT_DRP_BOX",
+				"type": "char"
+			},
+			{
+				"name": "IND_ALTN_TRAN_24HR",
+				"type": "char"
+			},
+			{
+				"name": "TXT_RAP_NOTE",
+				"type": "char"
+			},
+			{
+				"name": "ID_MBC_DLR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_CRM_MGMT_SYS",
+				"type": "char"
+			},
+			{
+				"name": "DES_CRM_MGMT_SYS",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DNIR_GRP",
+				"type": "char"
+			},
+			{
+				"name": "DES_DNIR_GRP",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DNIR_TYP",
+				"type": "char"
+			},
+			{
+				"name": "DES_DNIR_TYP",
+				"type": "char"
+			},
+			{
+				"name": "KEY_SPOM_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_SPOM",
+				"type": "char"
+			},
+			{
+				"name": "NAM_SPOM",
+				"type": "char"
+			},
+			{
+				"name": "NUM_SPOM_TEL_EXT",
+				"type": "char"
+			},
+			{
+				"name": "KEY_MKT_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_MKT",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MKT",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MKT_MGR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MKT_MGR",
+				"type": "char"
+			},
+			{
+				"name": "KEY_MA_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_MA",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MA",
+				"type": "char"
+			},
+			{
+				"name": "NUM_MA_TEL_EXT",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MAM",
+				"type": "char"
+			},
+			{
+				"name": "NUM_MAM_CELL",
+				"type": "char"
+			},
+			{
+				"name": "KEY_RGN_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_RGN",
+				"type": "char"
+			},
+			{
+				"name": "NAM_RGN",
+				"type": "char"
+			},
+			{
+				"name": "ADR_RGN_CITY",
+				"type": "char"
+			},
+			{
+				"name": "ADR_RGN_ST_CDE",
+				"type": "char"
+			},
+			{
+				"name": "ADR_RGN_ZIP",
+				"type": "char"
+			},
+			{
+				"name": "ADR_RGN_ZIP_EXT",
+				"type": "char"
+			},
+			{
+				"name": "NUM_RGN_TEL",
+				"type": "char"
+			},
+			{
+				"name": "ID_FTL_DLR",
+				"type": "char"
+			},
+			{
+				"name": "QTY_UIO_CV",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DTE_DLR_OPEN_CV",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "KEY_FRAN_MGR_MKT_CV",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_CVM",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CVM",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CVM_EML",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CVM_CELL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DO_BUSN_AS_SMRT",
+				"type": "char"
+			},
+			{
+				"name": "QTY_UIO_SMRT",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DTE_DLR_OPEN_SMRT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "KEY_FRAN_MGR_MKT_SMRT",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_SMRT_MGR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_SMRT_MGR",
+				"type": "char"
+			},
+			{
+				"name": "ADR_SMRT_MGR_EML",
+				"type": "char"
+			},
+			{
+				"name": "DTE_INACT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "NUM_SMRT_MGR_CELL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_AOM_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "ADR_AOM_EML",
+				"type": "char"
+			},
+			{
+				"name": "NUM_AOM_CELL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MAM_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "ADR_MAM_EML",
+				"type": "char"
+			},
+			{
+				"name": "NAM_MM_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "ADR_MM_EML",
+				"type": "char"
+			},
+			{
+				"name": "NUM_MM_CELL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_SMRT_MGR_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CVM_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "KEY_RTS_DIM",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NAM_RTS",
+				"type": "char"
+			},
+			{
+				"name": "NUM_RTS_TEL_EXTN",
+				"type": "char"
+			},
+			{
+				"name": "NAM_RTS_SHRT",
+				"type": "char"
+			},
+			{
+				"name": "ADR_RTS_EML",
+				"type": "char"
+			},
+			{
+				"name": "NUM_RTS_CELL",
+				"type": "char"
+			},
+			{
+				"name": "ID_RTS",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_CREA",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_CREA_USER",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_EDW",
+			"table": "DLR_DIM"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

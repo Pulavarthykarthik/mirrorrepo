@@ -1,0 +1,185 @@
+{
+	"name": "PDW_ADHOC_PIPELINE",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup All batches",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Unzip_PDW_Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderStoredProcedureName": "[ADW_PDW_EDW_STG].[GET_ADHOC_PIPELINE_LIST]",
+						"storedProcedureParameters": {
+							"PI_RUNDATE": {
+								"type": "Datetime",
+								"value": {
+									"value": "@variables('v_current_date')",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_pdw_list_lookup",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Exec all batches in parallel",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup All batches",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup All batches').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Execute Tables in Parallel or Sequence",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PDW_ADHOC_CHILD01",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"RUN_TYPE": {
+										"value": "@item().Run_Type",
+										"type": "Expression"
+									},
+									"RUN_DATE": {
+										"value": "@variables('v_current_date')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Run_Date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_current_date",
+					"value": {
+						"value": "@utcNow('yyyy-MM-dd')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Unzip_PDW_Files",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Run_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_pdw_uncompressed_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@variables('v_current_date')",
+								"type": "Expression"
+							},
+							"file_path": "pdw-edw/prod/data"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_PDW_unzip_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"FILE_SYSTEM": "adls-pdw-edw",
+							"run_date": {
+								"value": "@variables('v_current_date')",
+								"type": "Expression"
+							},
+							"FILE_PATH": "raw/edw/"
+						}
+					}
+				]
+			}
+		],
+		"variables": {
+			"v_current_date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "PDW/PDW_ADHOC_EXECUTION"
+		},
+		"annotations": []
+	}
+}

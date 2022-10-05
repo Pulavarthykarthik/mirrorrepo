@@ -1,0 +1,32 @@
+{
+	"name": "MSS_DAILY",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MSS_Daily",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2020-06-24T02:49:00Z",
+				"timeZone": "UTC",
+				"schedule": {
+					"minutes": [
+						7
+					],
+					"hours": [
+						13
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,241 @@
+{
+	"name": "pi_prtnr_truncate_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Read Truncate Load JSON File",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "adls-partner-kpi/StaggingFiles",
+								"type": "Expression"
+							},
+							"wildcardFileName": "ADW_PRTNR_TRUNCATE_LOAD.j*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "adw_prtnr_json",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For Each JSON Object Process the Truncate Load",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Read Truncate Load JSON File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Read Truncate Load JSON File').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@item().notebook_path",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Load Data to ADW Table",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Execute Notebook",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/',item().table,'/year=',utcnow('yyyy'),'/month=',utcnow('MM'),'/day=',utcnow('dd'))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.parquet",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink",
+									"preCopyScript": {
+										"value": "@{concat('Truncate Table ', item().schema, '.', item().table)}",
+										"type": "Expression"
+									},
+									"writeBehavior": "Insert",
+									"sqlWriterUseTableLock": false,
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_PROCESSED_PARQUET",
+									"type": "DatasetReference",
+									"parameters": {
+										"container_name": {
+											"value": "@item().container",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_ADW_TABLES_ADF",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaName": {
+											"value": "@item().schema",
+											"type": "Expression"
+										},
+										"TableName": {
+											"value": "@item().table",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "For Each Table Run DQF",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "For Each JSON Object Process the Truncate Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.Table_Name",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "DQF Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/DQF_RUN",
+								"baseParameters": {
+									"Date": {
+										"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"schema_name": "DEALER_PARTNER_KPI",
+									"Path": {
+										"value": "/mnt/adls-partner-kpi/processed",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Table_Name": {
+				"type": "array",
+				"defaultValue": [
+					"PRTNR_MGT_DLR_AOI",
+					"PRTNR_MGT_DLR_AOR",
+					"PRTNR_MGT_RZN_ZIP"
+				]
+			}
+		},
+		"folder": {
+			"name": "PARTNER_KPI"
+		},
+		"annotations": []
+	}
+}

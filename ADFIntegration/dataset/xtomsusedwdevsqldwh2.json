@@ -1,0 +1,25 @@
+{
+	"name": "xtomsusedwdevsqldwh2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DW TableNames": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Test"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADW_FINANCE_MSS",
+			"table": "MBUSA_APPLN"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,41 @@
+{
+	"name": "ADW_DMS_Modules_configs",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "MRA_Inc_dependency_managed",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"module_name": {
+					"type": "string"
+				},
+				"table": {
+					"type": "string"
+				},
+				"pipeline": {
+					"type": "string"
+				},
+				"schema": {
+					"type": "string"
+				},
+				"container": {
+					"type": "string"
+				},
+				"notebook_path": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

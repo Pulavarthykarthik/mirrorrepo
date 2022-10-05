@@ -1,0 +1,235 @@
+{
+	"name": "PDW_incremental_child_lookup_table_status",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lkp_PDW_Failing_Tables",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT case when count(*) > 0 then ''True'' else ''False'' end as Is_Table_In_Failed_State FROM ADW_PDW_EDW.PDW_FAILED_TABLES_STATUS WHERE EXECUTION_STATUS = ''Failed'' AND ADW_TABLE = ''',pipeline().parameters.table_name,'''' )",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "PDW_Tables_Failing_Status",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "If PDW table failing",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Lkp_PDW_Failing_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('Lkp_PDW_Failing_Tables').output.firstRow.Is_Table_In_Failed_State,'True')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "check_pipeline_type_and_continue",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "check_pipeline_type_and_continue",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"notebook_path": {
+										"value": "@pipeline().parameters.notebook_path",
+										"type": "Expression"
+									},
+									"pipeline": {
+										"value": "@pipeline().parameters.pipeline",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "sp_update_tbl_status_pdw",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "[ADW_PDW_EDW].[sp_PDW_FAILED_TABLES_STATUS]",
+								"storedProcedureParameters": {
+									"ADW_SCHEMA": {
+										"value": {
+											"value": "ADW_PDW_EDW",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ADW_TABLE": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"DATA_EXECUTED_FOR_DT": {
+										"value": {
+											"value": "@pipeline().parameters.run_date",
+											"type": "Expression"
+										},
+										"type": "DateTime"
+									},
+									"DW_UPDT_BY": {
+										"value": null,
+										"type": "String"
+									},
+									"DW_UPDT_DT": {
+										"value": null,
+										"type": "DateTime"
+									},
+									"EXCEPTIONS": {
+										"value": {
+											"value": "Table already failing for some of the previous dates",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"EXECUTION_STATUS": {
+										"value": {
+											"value": "Failed",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PARENT_PIPELINE": {
+										"value": {
+											"value": "@pipeline()?.TriggeredByPipelineName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PIPELINE_NAME": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PIPELINE_RUN_ID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"REMARK": {
+										"value": null,
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Fail_pl",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "sp_update_tbl_status_pdw",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@concat(pipeline().parameters.table_name,' is failing for previous days execution')",
+									"type": "Expression"
+								},
+								"errorCode": {
+									"value": "XXX",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"schema_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			},
+			"pipeline": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "PDW/Daily incremental"
+		},
+		"annotations": []
+	}
+}

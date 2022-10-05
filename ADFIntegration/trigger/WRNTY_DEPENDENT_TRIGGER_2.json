@@ -1,0 +1,32 @@
+{
+	"name": "WRNTY_DEPENDENT_TRIGGER_2",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_warranty_dependent",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-09-08T07:18:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						40
+					],
+					"hours": [
+						14
+					]
+				}
+			}
+		}
+	}
+}

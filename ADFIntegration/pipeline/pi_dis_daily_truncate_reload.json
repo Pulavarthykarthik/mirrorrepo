@@ -1,0 +1,192 @@
+{
+	"name": "pi_dis_daily_truncate_reload",
+	"properties": {
+		"activities": [
+			{
+				"name": "DIS_Tranformation",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@pipeline().parameters.notebook_path",
+						"type": "Expression"
+					},
+					"baseParameters": {
+						"table_name": {
+							"value": "@pipeline().parameters.table_name",
+							"type": "Expression"
+						},
+						"container_name": {
+							"value": "@pipeline().parameters.container_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Load_Data_into_ADW",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "DIS_Tranformation",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('/processed/',pipeline().parameters.table_name,'/year=',if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy'),formatDateTime(pipeline().parameters.run_date,'yyyy')),'/month=',if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('MM'),formatDateTime(pipeline().parameters.run_date,'MM')),'/day=',if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('dd'),formatDateTime(pipeline().parameters.run_date,'dd')))",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": {
+							"value": "@{concat('TRUNCATE table ',pipeline().parameters.schema_name,'.',pipeline().parameters.table_name)}",
+							"type": "Expression"
+						},
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_dis_dest",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADW_TABLES",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": {
+								"value": "@pipeline().parameters.schema_name",
+								"type": "Expression"
+							},
+							"TableName": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Execute DQF for DLR_DIM",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Load_Data_into_ADW",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.table_name,'DLR_DIM')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DQF_notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/RUN_DQF_DEALER",
+								"baseParameters": {
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									},
+									"Date": {
+										"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			},
+			"schema_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "DIS"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "mmr_gen2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('MMR/',formatDateTime(addDays(utcNow(),-1),'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-finance-mmr"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

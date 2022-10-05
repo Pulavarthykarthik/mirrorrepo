@@ -1,0 +1,32 @@
+{
+	"name": "mmr_daily_adw",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MMR_Daily_Load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2021-03-25T19:01:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						14
+					]
+				}
+			}
+		}
+	}
+}

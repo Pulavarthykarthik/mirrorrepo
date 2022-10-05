@@ -1,0 +1,1302 @@
+{
+	"name": "WRNTY_VEH_MAINFRAME",
+	"properties": {
+		"activities": [
+			{
+				"name": "If Condition for 57_58_59",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Run Notebook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue'), equals(activity('DBx_Transform_57_58_59').output.runOutput,'Success'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Create_STG_TBL 557",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DROP IF CREATED STG TBL 557",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_FOR 557",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL 557",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/wrnty_opr/',pipeline().parameters.table_name,'1/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Update_Insert_Drop",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_FOR 557",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_INSERT_UPDATE_INCRE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DROP IF CREATED STG TBL 557",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "[ADW_WRNTY_EDW_STG].[DROP_STG_TBL]",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"TABLE_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Create_STG_TBL 558-559",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DROP IF CREATED STG TBL 558-559",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL_UPDT_2')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_FOR 558-559",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL 558-559",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/wrnty_opr/',pipeline().parameters.table_name,'2/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "UPDATE_AMG_CNT_SRV",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_FOR 558-559",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPD_AMG_CNT_SRV_INSERT_UPDATE_INCRE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DROP IF CREATED STG TBL 558-559",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Update_Insert_Drop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "[ADW_WRNTY_EDW_STG].[DROP_STG_TBL]",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"TABLE_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition for L",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Run Notebook_L",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue'), equals(activity('DBx_Transform_L').output.runOutput,'Success'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Create_STG_TBL 560-L",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DROP IF CREATED STG TBL 560-L",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL_UPDT_TXT_WRNTY_VEH_COM')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_FOR 560-L",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL 560-L",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/wrnty_opr/',pipeline().parameters.table_name,'7/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Update_Insert_Drop_copy1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_FOR 560-L",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPD_MFR_MODL_AOM_INSERT_UPDATE_INCRE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DROP IF CREATED STG TBL 560-L",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "[ADW_WRNTY_EDW_STG].[DROP_STG_TBL]",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"TABLE_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "UPDATE_LAST_RUN",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "Update_Insert_Drop_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/WARRANTY/UPDTAE_LAST_RUN_IN_JSON",
+								"baseParameters": {
+									"pipeline_name": {
+										"value": "@pipeline()?.TriggeredByPipelineName",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.validation_table_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition for IND- Y",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Run Notebook_Y",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue'), equals(activity('DBx_Transform_Y').output.runOutput,'Success'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Create_STG_TBL 560-Y",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DROP IF CREATED STG TBL 560-Y",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL_UPDT_CDE_ECR_VEH_TYP_WRNTY_VEH_AND_AUD')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_FOR 560-Y",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL 560-Y",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/wrnty_opr/',pipeline().parameters.table_name,'3/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "UPDATE_CDE_ECR_VEH_TYP",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_FOR 560-Y",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPDATE_CDE_ECR_VEH_TYP')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DROP IF CREATED STG TBL 560-Y",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "[ADW_WRNTY_EDW_STG].[DROP_STG_TBL]",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"TABLE_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "UPDATE_INSERT_WRNTY_VEH_AUD",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "UPDATE_CDE_ECR_VEH_TYP",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPDATE_WRNTY_VEH_AUD')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition for IND- N",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Run Notebook_N",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue'), equals(activity('DBx_Transform_N').output.runOutput,'Success'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Create_STG_TBL 560-N",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "DROP IF CREATED STG TBL 560-N",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL_UPDT_CDE_ECR_VEH_TYP_WRNTY_VEH_AND_AUD')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_FOR 560-N",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL 560-N",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/wrnty_opr/',pipeline().parameters.table_name,'6/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "UPDATE_CDE_ECR_VEH_TYP_N",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_FOR 560-N",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPDATE_CDE_ECR_VEH_TYP')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "DROP IF CREATED STG TBL 560-N",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "[ADW_WRNTY_EDW_STG].[DROP_STG_TBL]",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"TABLE_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "UPDATE_INSERT_WRNTY_VEH_AUD_N",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "UPDATE_CDE_ECR_VEH_TYP_N",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_UPDATE_WRNTY_VEH_AUD')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "VALIDATE_FILE_RUN",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/WARRANTY/VALIDATE_FILE_RUN",
+					"baseParameters": {
+						"pipeline_name": {
+							"value": "@pipeline()?.TriggeredByPipelineName",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.validation_table_name",
+							"type": "Expression"
+						},
+						"force_run": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Run Notebook",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "VALIDATE_FILE_RUN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DBx_Transform_57_58_59",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@concat(pipeline().parameters.notebook_path,'_57_58_59')",
+									"type": "Expression"
+								},
+								"baseParameters": {
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Run Notebook_Y",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Condition for 57_58_59",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DBx_Transform_Y",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@concat(pipeline().parameters.notebook_path,'_Y')",
+									"type": "Expression"
+								},
+								"baseParameters": {
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Run Notebook_N",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Condition for IND- Y",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DBx_Transform_N",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@concat(pipeline().parameters.notebook_path,'_N')",
+									"type": "Expression"
+								},
+								"baseParameters": {
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Run Notebook_L",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Condition for IND- N",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DBx_Transform_L",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@concat(pipeline().parameters.notebook_path,'_L')",
+									"type": "Expression"
+								},
+								"baseParameters": {
+									"run_date": {
+										"value": "@pipeline().parameters.run_date",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"schema_name": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			},
+			"force_run": {
+				"type": "string"
+			},
+			"validation_table_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "pipeline_framework"
+		},
+		"annotations": []
+	}
+}

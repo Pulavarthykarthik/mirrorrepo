@@ -1,0 +1,33 @@
+{
+	"name": "MRA_Daily_Incremental",
+	"properties": {
+		"description": "12:50 PM Trigger",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MRA_incremental_parent_pl",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-01-13T12:50:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						12
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,55 @@
+{
+	"name": "FDW_Daily_Incremental_Trigger",
+	"properties": {
+		"description": "FDW pipeline running daily for incremental updates for 20 non static tables\nExcept Saturday",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "FDW_Daily_Incremental_Watermark",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"watermark_table_name": "WATERMARK_TBL",
+					"watermark_schema_name": "ADW_CTRL",
+					"watermark_lookup_value": "FDW_Daily_Run_Completed",
+					"initial_start_day_when_null": "-1",
+					"end_day": "0",
+					"skip_weekdays": "Saturday",
+					"container_name": "adls-fdw-edw",
+					"extract_folder_name": "adls-fdw-edw-raw-cofico",
+					"watermark_sp_name": "sp_WaterMark_TBL",
+					"config_folder": "fdw_edw",
+					"schema_name": "ADW_FDW_EDW",
+					"row_count": "17"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2022-06-27T00:09:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						8
+					],
+					"weekDays": [
+						"Sunday",
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday"
+					]
+				}
+			}
+		}
+	}
+}

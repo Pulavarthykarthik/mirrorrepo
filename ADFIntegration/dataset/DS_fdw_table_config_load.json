@@ -1,0 +1,41 @@
+{
+	"name": "DS_fdw_table_config_load",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"json_directory_path": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "FDW/FDW_Daily_Incremental"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().json_directory_path",
+					"type": "Expression"
+				},
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"table": {
+					"type": "string"
+				},
+				"pipeline": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

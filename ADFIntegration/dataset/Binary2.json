@@ -1,0 +1,21 @@
+{
+	"name": "Binary2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ETC"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"folderPath": "MBUSA/DAPS/prod/DAPS/MS/CDM"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,39 @@
+{
+	"name": "eqc_lead_file_transfer_trigger",
+	"properties": {
+		"description": "This trigger is used to trigger the pipeline which transfers EQC lead files from domain to MBUSA data lake.",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "copy_eqc_files_to_mbusa_data_lake",
+					"type": "PipelineReference"
+				}
+			},
+			{
+				"pipelineReference": {
+					"referenceName": "copy_model_attribution_files_to_mbusa_data_lake",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-06-07T17:28:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

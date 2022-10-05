@@ -1,0 +1,491 @@
+{
+	"name": "DE_VISTA_copy1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "VISTA"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "NUM_PORD",
+				"type": "char"
+			},
+			{
+				"name": "ID_USA_VIN_1_10",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PLANT",
+				"type": "char"
+			},
+			{
+				"name": "NUM_SER",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "IND_USED_CAR",
+				"type": "char"
+			},
+			{
+				"name": "ID_RGN",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MODL_YR",
+				"type": "char"
+			},
+			{
+				"name": "DES_MODL",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MODL_CLS",
+				"type": "char"
+			},
+			{
+				"name": "CDE_NATL_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "CDE_VEH_STAT_CATG",
+				"type": "char"
+			},
+			{
+				"name": "ID_VPC",
+				"type": "char"
+			},
+			{
+				"name": "DTE_IVTY_AGE",
+				"type": "date"
+			},
+			{
+				"name": "CDE_HIDE",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PHY_LOC",
+				"type": "char"
+			},
+			{
+				"name": "CDE_VEH_STAT",
+				"type": "char"
+			},
+			{
+				"name": "DTE_STAT",
+				"type": "date"
+			},
+			{
+				"name": "CDE_UPHOL",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PAINT_LOW",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PAINT_UPP",
+				"type": "char"
+			},
+			{
+				"name": "ID_DLR",
+				"type": "char"
+			},
+			{
+				"name": "ID_MKT",
+				"type": "char"
+			},
+			{
+				"name": "DTE_DECD_SCHD",
+				"type": "date"
+			},
+			{
+				"name": "CDE_DECD_PERD",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ALLOC_PERD",
+				"type": "char"
+			},
+			{
+				"name": "NUM_ENGINE",
+				"type": "char"
+			},
+			{
+				"name": "IND_BUYBK",
+				"type": "char"
+			},
+			{
+				"name": "DTE_BUYBK",
+				"type": "date"
+			},
+			{
+				"name": "DTE_REQD_EURO_DLVY",
+				"type": "date"
+			},
+			{
+				"name": "DTE_SCHD_EX_FCTRY",
+				"type": "date"
+			},
+			{
+				"name": "DTE_PRODN",
+				"type": "date"
+			},
+			{
+				"name": "DTE_ACTL_PRODN",
+				"type": "date"
+			},
+			{
+				"name": "IND_PRT_INV",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DIVRT_TO_PORD",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DIVRT_PORD",
+				"type": "char"
+			},
+			{
+				"name": "IND_DLR_UPDT",
+				"type": "char"
+			},
+			{
+				"name": "CDE_MKT_ADJ_PERD",
+				"type": "char"
+			},
+			{
+				"name": "IND_WRNTY_PGM",
+				"type": "char"
+			},
+			{
+				"name": "DTE_MODL_YR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PRC_CHG",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DESIGNO",
+				"type": "char"
+			},
+			{
+				"name": "CDE_DLR_STK",
+				"type": "char"
+			},
+			{
+				"name": "IND_AVLBL_FOR_TRD",
+				"type": "char"
+			},
+			{
+				"name": "CDE_TLMTC_VEND_STS",
+				"type": "char"
+			},
+			{
+				"name": "CDE_TLMTC_CONTR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_TLMTC_ELIG",
+				"type": "char"
+			},
+			{
+				"name": "CDE_HOT_CAR",
+				"type": "char"
+			},
+			{
+				"name": "DTE_HOT_CAR",
+				"type": "date"
+			},
+			{
+				"name": "NUM_SLS_PGM_CTRL",
+				"type": "char"
+			},
+			{
+				"name": "DTE_WRNTY_START",
+				"type": "date"
+			},
+			{
+				"name": "DTE_WRNTY_END",
+				"type": "date"
+			},
+			{
+				"name": "CDE_WRNTY_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ASSIGN_PORT",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ASSIGN_VPC",
+				"type": "char"
+			},
+			{
+				"name": "IND_PICKUP_DLR",
+				"type": "char"
+			},
+			{
+				"name": "IND_PFD",
+				"type": "char"
+			},
+			{
+				"name": "IND_MNRY_LBL",
+				"type": "char"
+			},
+			{
+				"name": "IND_DLR_ADD_ACSRY",
+				"type": "char"
+			},
+			{
+				"name": "IND_DSCLSR",
+				"type": "char"
+			},
+			{
+				"name": "IND_LUX_TAX_PD",
+				"type": "char"
+			},
+			{
+				"name": "AMT_LUX_TAX",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "CDE_USE",
+				"type": "char"
+			},
+			{
+				"name": "DTE_USE",
+				"type": "date"
+			},
+			{
+				"name": "ID_FCTRY_PRODN",
+				"type": "char"
+			},
+			{
+				"name": "IND_FLRMAT_EXTRT",
+				"type": "char"
+			},
+			{
+				"name": "IND_REGIS_RSTRCTN",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DLR_ORD",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 0
+			},
+			{
+				"name": "CDE_ORD_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "DTE_GO_SPEC",
+				"type": "date"
+			},
+			{
+				"name": "IND_DMG",
+				"type": "char"
+			},
+			{
+				"name": "AMT_GROSS_SHPG_WT",
+				"type": "decimal",
+				"precision": 7,
+				"scale": 0
+			},
+			{
+				"name": "AMT_GAS_GZLR_TAX",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "AMT_FRGHT_COST",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "AMT_LAND_COST",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "AMT_MRNE_INS_COST",
+				"type": "decimal",
+				"precision": 12,
+				"scale": 2
+			},
+			{
+				"name": "IND_ASSIGN",
+				"type": "char"
+			},
+			{
+				"name": "CDE_ASG_STAT",
+				"type": "char"
+			},
+			{
+				"name": "CDE_SUBSQ_ALLOC",
+				"type": "char"
+			},
+			{
+				"name": "NUM_ORD_VER",
+				"type": "char"
+			},
+			{
+				"name": "IND_ALT_TRNSPN_PGM",
+				"type": "char"
+			},
+			{
+				"name": "NUM_BUYBK_MIL",
+				"type": "decimal",
+				"precision": 7,
+				"scale": 0
+			},
+			{
+				"name": "IND_PROV",
+				"type": "char"
+			},
+			{
+				"name": "CDE_SOLD_CAR",
+				"type": "char"
+			},
+			{
+				"name": "IND_HOLD",
+				"type": "char"
+			},
+			{
+				"name": "DTE_UPDT",
+				"type": "date"
+			},
+			{
+				"name": "TME_UPDT",
+				"type": "time",
+				"scale": 7
+			},
+			{
+				"name": "ID_UPDT_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTE_PROV",
+				"type": "date"
+			},
+			{
+				"name": "ID_DLR_PROV",
+				"type": "char"
+			},
+			{
+				"name": "IND_VPC_TRNF_ON_RT",
+				"type": "char"
+			},
+			{
+				"name": "CDE_PLN_DECD_PERD",
+				"type": "char"
+			},
+			{
+				"name": "CDE_USED_VALID_BYP",
+				"type": "char"
+			},
+			{
+				"name": "IND_BUYBK_PEND",
+				"type": "char"
+			},
+			{
+				"name": "IND_REPL_DLR_INVT",
+				"type": "char"
+			},
+			{
+				"name": "IND_INVALID_CONFIG",
+				"type": "char"
+			},
+			{
+				"name": "IND_ECS",
+				"type": "char"
+			},
+			{
+				"name": "CDE_SPARTE",
+				"type": "char"
+			},
+			{
+				"name": "CDE_BAUM",
+				"type": "char"
+			},
+			{
+				"name": "CDE_STEERING",
+				"type": "char"
+			},
+			{
+				"name": "CDE_TRNS",
+				"type": "char"
+			},
+			{
+				"name": "IND_IX_VEHI_LOCR",
+				"type": "char"
+			},
+			{
+				"name": "IND_IX_VEHI_VIN",
+				"type": "char"
+			},
+			{
+				"name": "CDE_TRVL",
+				"type": "char"
+			},
+			{
+				"name": "DTE_ARVL",
+				"type": "date"
+			},
+			{
+				"name": "NUM_SHPMT",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_RCD_EFF",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "DTS_DW_CREA",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ID_DW_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_RCD_END",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_VISTA1",
+			"table": "VEH_VEHI"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

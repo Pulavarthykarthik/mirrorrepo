@@ -1,0 +1,157 @@
+{
+	"name": "DMS_RO_HDR_HIST_Table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MRA"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ID_DLR",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DMS_INV",
+				"type": "char"
+			},
+			{
+				"name": "DTE_DMS_INV_CLOS_ORGNL",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "NUM_DMS_CUS",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DMS_CUS_FULL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_STD_CUS_FULL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DMS_CUS_FIR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DMS_CUS_MID",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DMS_CUS_LST",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DMS_CUS_SFX",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DMS_CUST_CITY",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DMS_CUST_ST",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DMS_CUST_ZIP",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CUS_HOM_PHN",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CUS_WRK_PHN",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DMS_CUST_EML",
+				"type": "varchar"
+			},
+			{
+				"name": "AMT_TOT_CST_INV",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "AMT_TOT_PRC_INV",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "ADR_DMS_CUS_LN_1",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DMS_CUS_LN_2",
+				"type": "char"
+			},
+			{
+				"name": "AMT_DMS_INV_TAX",
+				"type": "decimal",
+				"precision": 11,
+				"scale": 2
+			},
+			{
+				"name": "NAM_CUS_SALTN",
+				"type": "char"
+			},
+			{
+				"name": "CDE_WHSLE_RTL",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_RCD_EFF",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "DTS_DW_RCD_END",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "IND_DW_RCD_DEL",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_CREA",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ID_DW_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_DMS_MRA",
+			"table": "DMS_RO_HDR_HIST"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

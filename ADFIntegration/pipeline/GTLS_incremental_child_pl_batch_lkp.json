@@ -1,0 +1,112 @@
+{
+	"name": "GTLS_incremental_child_pl_batch_lkp",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lkp_batch_config",
+				"description": "Reads configurations for all table in a batch",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": {
+								"value": "@concat(pipeline().parameters.batch_name,'.json')",
+								"type": "Expression"
+							},
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "gtls_batch_config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachTableConfig",
+				"description": "Executes tables in parallel",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lkp_batch_config",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lkp_batch_config').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "GTLS_incremental_child_pl_tbl_status_lkp",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "GTLS_incremental_child_pl_tbl_status_lkp",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"schema_name": {
+										"value": "ADW_TrainED_EDW_STG",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item().table",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "adls-trained-edw",
+										"type": "Expression"
+									},
+									"notebook_path": {
+										"value": "@item().notebook_path",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"batch_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "GTLS/GTLS Daily incremental"
+		},
+		"annotations": []
+	}
+}

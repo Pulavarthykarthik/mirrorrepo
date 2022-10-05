@@ -1,0 +1,36 @@
+{
+	"name": "PRTNR_KPI_QUARTERLY_DELTA_LOAD",
+	"properties": {
+		"description": "This trigger is used to run \"pi_prtnr_quarterly_delta_load\" pipeline",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_prtnr_quarterly_delta_load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2022-08-23T17:18:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						8
+					],
+					"monthDays": [
+						21
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,149 @@
+{
+	"name": "PDW_ParagonUnzip_child01_watermark",
+	"properties": {
+		"activities": [
+			{
+				"name": "LookupWatermarkFolder",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT DATEADD(Day,1,MAX(WATERMARK_DT_UTC)) as NewWatermarkValue FROM ADW_CTRL_STG.WaterMark_TBL WHERE FILE_EXISTS_STATUS = ''True'' AND ROW_COUNT>''10'' AND ADW_TABLE = ''',pipeline().parameters.table_name,'''' )",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_Watermark_Tbl",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "If Null FolderWatermark",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "LookupWatermarkFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('LookupWatermarkFolder').output.firstRow.NewWatermarkValue, null)\r\n",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Execute ParagonUnzip Loop",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PDW_ParagonUnzip_child02_loop",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"start_date": {
+										"value": "@activity('LookupWatermarkFolder').output.firstRow.NewWatermarkValue",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"end_date": {
+										"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Execute ParagonUnzip Loop prev_day",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PDW_ParagonUnzip_child02_loop",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"start_date": {
+										"value": "@formatDateTime(addDays(utcnow(),-1),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@pipeline().parameters.table_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"end_date": {
+										"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"extract_folder_name": {
+				"type": "string",
+				"defaultValue": "adls-pdw-edw-raw-paragon"
+			},
+			"table_name": {
+				"type": "string",
+				"defaultValue": "PDW_Paragon_Unzip"
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "adls-pdw-edw"
+			}
+		},
+		"variables": {
+			"vExtractStartDate": {
+				"type": "String"
+			},
+			"vExtractEndDate": {
+				"type": "String"
+			},
+			"vExtractDateCounter": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Delta_watermark/PDW_Daily_Incremental"
+		},
+		"annotations": []
+	}
+}

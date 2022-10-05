@@ -1,0 +1,139 @@
+{
+	"name": "masking_utility",
+	"properties": {
+		"activities": [
+			{
+				"name": "Mask_Data",
+				"type": "DatabricksSparkJar",
+				"dependsOn": [
+					{
+						"activity": "Generate_Properties",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"mainClassName": "com.daimler.nbx.pseudo.wrapper.scala.Main",
+					"parameters": [
+						"@concat('/dbfs/mnt/data-engineering/',pipeline().parameters.config_folder,'/masking/',pipeline().parameters.table_name,'.json')"
+					],
+					"libraries": [
+						{
+							"jar": "dbfs:/FileStore/DAPS/jars/nbx-pseudo-spark-databricks-runtime-7.jar"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Delete_Processed",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Mask_Data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "delete_folder",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_name": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							},
+							"folder_path": {
+								"value": "@concat('/processed/',pipeline().parameters.table_name,'/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"wildcardFileName": "*.csv",
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Generate_Properties",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/Repos/daps-databricks-MASTER/daps-databricks/notebooks/DataEngineering/Common/Utilities/create_masking_json",
+					"baseParameters": {
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.table_name",
+							"type": "Expression"
+						},
+						"config_folder": {
+							"value": "@pipeline().parameters.config_folder",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"config_folder": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "pipeline_framework"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,32 @@
+{
+	"name": "WSG_TABLES_TRIGGER_1",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_warranty_WSG",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-09-08T07:04:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						55
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

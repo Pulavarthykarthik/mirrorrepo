@@ -1,0 +1,33 @@
+{
+	"name": "pdw_table_config",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "pipeline_framework"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "pdw-edw/pipeline-table-config",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"table": {
+					"type": "string"
+				},
+				"pipeline": {
+					"type": "string"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

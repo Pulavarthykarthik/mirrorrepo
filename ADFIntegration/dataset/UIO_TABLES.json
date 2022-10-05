@@ -1,0 +1,20 @@
+{
+	"name": "UIO_TABLES",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "UIO"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADW_EXPERIAN",
+			"table": "EXPERIAN_UIO_STG"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

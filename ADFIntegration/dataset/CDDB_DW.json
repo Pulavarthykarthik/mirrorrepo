@@ -1,0 +1,300 @@
+{
+	"name": "CDDB_DW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "cddb"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "DEALER",
+				"type": "char"
+			},
+			{
+				"name": "RGN",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "MKT",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "PC",
+				"type": "char"
+			},
+			{
+				"name": "LT",
+				"type": "char"
+			},
+			{
+				"name": "MAYBACH",
+				"type": "char"
+			},
+			{
+				"name": "MB_SPRINTER",
+				"type": "char"
+			},
+			{
+				"name": "FTL_SPRINTER",
+				"type": "char"
+			},
+			{
+				"name": "SMART",
+				"type": "char"
+			},
+			{
+				"name": "CPO",
+				"type": "char"
+			},
+			{
+				"name": "TOP_55",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "TOP_55_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "TYPE",
+				"type": "varchar"
+			},
+			{
+				"name": "DEALER_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DEALER_DBA",
+				"type": "varchar"
+			},
+			{
+				"name": "FEDEX_LINE_1",
+				"type": "varchar"
+			},
+			{
+				"name": "FEDEX_LINE_2",
+				"type": "varchar"
+			},
+			{
+				"name": "FEDEX_CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "FE_STATE",
+				"type": "char"
+			},
+			{
+				"name": "FEDEX_ZIP",
+				"type": "char"
+			},
+			{
+				"name": "FIR_CLASS_LINE_1",
+				"type": "varchar"
+			},
+			{
+				"name": "FIR_CLASS_LINE_2",
+				"type": "varchar"
+			},
+			{
+				"name": "FIR_CLASS_CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "FC_STATE",
+				"type": "char"
+			},
+			{
+				"name": "FIRCLASS_ZIP",
+				"type": "char"
+			},
+			{
+				"name": "TELEPHONE",
+				"type": "char"
+			},
+			{
+				"name": "FAX",
+				"type": "char"
+			},
+			{
+				"name": "APPROVAL_DATE",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "ANNIVERSARY_DATE",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "PRINCIPAL_FNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "PRINCIPAL_MNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "PRINCIPAL_LNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "PRICIPAL_SALTN",
+				"type": "varchar"
+			},
+			{
+				"name": "PRINCIPAL_PRX",
+				"type": "char"
+			},
+			{
+				"name": "PRINCIPAL_SFX",
+				"type": "char"
+			},
+			{
+				"name": "MAIL_FNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "MAIL_MNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "MAIL_LNAME",
+				"type": "varchar"
+			},
+			{
+				"name": "MAIL_SALTN",
+				"type": "varchar"
+			},
+			{
+				"name": "MAIL_PFX",
+				"type": "char"
+			},
+			{
+				"name": "MAIL_SFX",
+				"type": "char"
+			},
+			{
+				"name": "MARKET_AREA",
+				"type": "char"
+			},
+			{
+				"name": "MARKET_MGR_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "SPOM",
+				"type": "char"
+			},
+			{
+				"name": "SPOM_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DMA_NAME",
+				"type": "varchar"
+			},
+			{
+				"name": "DMA",
+				"type": "char"
+			},
+			{
+				"name": "DNIR_GRP",
+				"type": "char"
+			},
+			{
+				"name": "DNIR_NAM",
+				"type": "varchar"
+			},
+			{
+				"name": "ABBR",
+				"type": "char"
+			},
+			{
+				"name": "EPV_PC",
+				"type": "char"
+			},
+			{
+				"name": "EPV_LT",
+				"type": "char"
+			},
+			{
+				"name": "EPV_MY",
+				"type": "char"
+			},
+			{
+				"name": "EPV_SP",
+				"type": "char"
+			},
+			{
+				"name": "EPV_SM",
+				"type": "char"
+			},
+			{
+				"name": "CV_MGR",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_MGR",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_DOINGBUSAS",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_FIR_CLASS_LINE_1",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_FIR_CLASS_LINE_2",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_FIR_CLASS_CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "SMTFC_ST",
+				"type": "char"
+			},
+			{
+				"name": "SMT_FED_EX_LINE_1",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_FED_EX_LINE_2",
+				"type": "varchar"
+			},
+			{
+				"name": "SMT_FED_EX_CITY",
+				"type": "varchar"
+			},
+			{
+				"name": "SMTFE_ST",
+				"type": "char"
+			},
+			{
+				"name": "ANN_YR",
+				"type": "char"
+			},
+			{
+				"name": "ANN_MTH",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_DEALER_CDDB",
+			"table": "DLR_INFO_EXT_TEMP"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

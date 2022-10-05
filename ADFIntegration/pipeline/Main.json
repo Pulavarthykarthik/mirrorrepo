@@ -24,8 +24,6 @@
 		"folder": {
 			"name": "Delta_watermark"
 		},
-		"annotations": [],
-		"lastPublishTime": "2022-10-05T09:59:18Z"
-	},
-	"type": "Microsoft.DataFactory/factories/pipelines"
+		"annotations": []
+	}
 }

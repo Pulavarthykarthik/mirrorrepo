@@ -1,0 +1,25 @@
+{
+	"name": "Uncompress_dest_MBOD",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Remarketing"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('MBOD/',formatDateTime(utcnow(),'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-vehicle-mbod"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

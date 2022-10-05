@@ -1,0 +1,159 @@
+{
+	"name": "cdm_experian_file_transfer",
+	"properties": {
+		"description": "This pipeline transfers experian files from domain data lake to MBUSA data lake.",
+		"activities": [
+			{
+				"name": "Extract Zip Files",
+				"description": "Fetching the daily data zip file from Daimler ADLS and extract it over reservoir ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "mbusa_cdm_experian_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "mbusa_experian_to_mbusa",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "sp_source_file_failed_status",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Extract Zip Files",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_CTRL].[sp_SOURCE_FILE_FAILED_STATUS]",
+					"storedProcedureParameters": {
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "Datetime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "Unzip failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "0001-01-01"
+			}
+		},
+		"variables": {
+			"ErrorValue": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "CDM"
+		},
+		"annotations": []
+	}
+}

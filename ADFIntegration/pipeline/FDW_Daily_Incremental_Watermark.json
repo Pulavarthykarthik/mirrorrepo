@@ -1,0 +1,797 @@
+{
+	"name": "FDW_Daily_Incremental_Watermark",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lookup Watermark Run Dates",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"sqlReaderQuery": {
+							"value": "@concat('\nDECLARE @v_start_date date\nDECLARE @v_end_date date\nDECLARE @v_MinDate date \nDECLARE @v_MaxDate date \n\nSELECT TOP 1\n@v_start_date =max(WATERMARK_DT_UTC) FROM ',pipeline().parameters.watermark_schema_name,'.',pipeline().parameters.watermark_table_name,'\nWHERE ADW_TABLE=''',pipeline().parameters.watermark_lookup_value,'''\n\nIF @v_start_date is NULL\n  set @v_start_date=dateadd(day,',pipeline().parameters.initial_start_day_when_null,',getutcdate())\nELSE\n  set @v_start_date=dateadd(day,1,@v_start_date)\n\nset @v_end_date=dateadd(day,',pipeline().parameters.end_day,',getutcdate())\n\n\nSET @v_MinDate=@v_start_date\nSET @v_MaxDate=@v_end_date\n\nSELECT cast(Date as nvarchar) as NewWatermarkValue  from(\nSELECT  TOP (DATEDIFF(DAY, @v_MinDate, @v_MaxDate) + 1)\n        Date = DATEADD(DAY, ROW_NUMBER() OVER(ORDER BY a.object_id) - 1, @v_MinDate)\nFROM    sys.all_objects a\n        CROSS JOIN sys.all_objects\n\t\t)A\n\t\twhere  datename(dw,Date) not in (''',pipeline().parameters.skip_weekdays,''')\n                ORDER BY DATE\n  '\n  \n  )",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "DS_fdw_watermark_tbl",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach Dates",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup Watermark Run Dates",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup Watermark Run Dates').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "CoficoUnzip",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Stop Foreach loop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_CoficoUnzip_Child01_Unzip",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"table_name": "FDW_Cofico_Unzip",
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"row_count": {
+										"value": "@pipeline().parameters.row_count",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Stop Foreach loop",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "check_last_run",
+								"value": {
+									"value": "@if( equals(variables('is_last_run_success'),true),true,'IamStringThatBreaksTypeError' )\n\n\n",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Load 1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "CoficoUnzip",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Sequence",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load1",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 2",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load2",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 3",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load3",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 4",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load4",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 7",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 6",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load7",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 6",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 5",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load6",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Load 5",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Load 4",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "FDW_Child01_Incremental_Loop_Parallel",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"watermark_table_name": {
+										"value": "@pipeline().parameters.watermark_table_name",
+										"type": "Expression"
+									},
+									"watermark_schema_name": {
+										"value": "@pipeline().parameters.watermark_schema_name",
+										"type": "Expression"
+									},
+									"container_name": {
+										"value": "@pipeline().parameters.container_name",
+										"type": "Expression"
+									},
+									"extract_folder_name": {
+										"value": "@pipeline().parameters.extract_folder_name",
+										"type": "Expression"
+									},
+									"load_directory_path": "fdw_edw/pipeline-table-config/load5",
+									"start_date": {
+										"value": "@item().NewWatermarkValue",
+										"type": "Expression"
+									},
+									"watermark_sp_name": {
+										"value": "@pipeline().parameters.watermark_sp_name",
+										"type": "Expression"
+									},
+									"config_folder": {
+										"value": "@pipeline().parameters.config_folder",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "@pipeline().parameters.schema_name",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Skip forech loop 2",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 1",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 3",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 2",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 4",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 3",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 5",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 4",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 6",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 5",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 7",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 6",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "Skip forech loop 8",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Load 7",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "is_last_run_success",
+								"value": false
+							}
+						},
+						{
+							"name": "sp_WaterMark_Success",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Load 7",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.watermark_schema_name,'.',pipeline().parameters.watermark_sp_name)",
+									"type": "Expression"
+								},
+								"storedProcedureParameters": {
+									"ADW_TABLE": {
+										"value": {
+											"value": "FDW_Daily_Run_Completed",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"WATERMARK_DT_UTC": {
+										"value": {
+											"value": "@item().NewWatermarkValue",
+											"type": "Expression"
+										},
+										"type": "Datetime"
+									},
+									"PIPELINE_RUN_ID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FILE_EXISTS_STATUS": {
+										"value": "True",
+										"type": "String"
+									},
+									"ADW_SCHEMA": {
+										"value": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PIPELINE_NAME": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"SOURCE_FILE_NAME": {
+										"value": null,
+										"type": "String"
+									},
+									"PARENT_PIPELINE": {
+										"value": {
+											"value": "@pipeline()?.TriggeredByPipelineName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TRIGGER_TYPE": {
+										"value": {
+											"value": "@pipeline().TriggerType",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TRIGGER_NAME": {
+										"value": {
+											"value": "@pipeline().TriggerName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"CONTAINER_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ROW_COUNT": {
+										"value": null,
+										"type": "Int32"
+									},
+									"EXCEPTIONS": {
+										"value": null,
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"watermark_table_name": {
+				"type": "string",
+				"defaultValue": "WATERMARK_TBL"
+			},
+			"watermark_schema_name": {
+				"type": "string",
+				"defaultValue": "ADW_CTRL"
+			},
+			"watermark_lookup_value": {
+				"type": "string",
+				"defaultValue": "FDW_Daily_Run_Completed"
+			},
+			"initial_start_day_when_null": {
+				"type": "string",
+				"defaultValue": "-1"
+			},
+			"end_day": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"skip_weekdays": {
+				"type": "string",
+				"defaultValue": "Saturday"
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "adls-fdw-edw"
+			},
+			"extract_folder_name": {
+				"type": "string",
+				"defaultValue": "adls-fdw-edw-raw-cofico"
+			},
+			"watermark_sp_name": {
+				"type": "string",
+				"defaultValue": "sp_WaterMark_TBL"
+			},
+			"config_folder": {
+				"type": "string",
+				"defaultValue": "fdw_edw"
+			},
+			"schema_name": {
+				"type": "string",
+				"defaultValue": "ADW_FDW_EDW"
+			},
+			"row_count": {
+				"type": "string",
+				"defaultValue": "17"
+			}
+		},
+		"variables": {
+			"is_last_run_success": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"check_last_run": {
+				"type": "Boolean",
+				"defaultValue": true
+			}
+		},
+		"folder": {
+			"name": "FDW/FDW_Daily_Incremental"
+		},
+		"annotations": []
+	}
+}

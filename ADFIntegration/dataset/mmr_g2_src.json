@@ -1,0 +1,27 @@
+{
+	"name": "mmr_g2_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MMR"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('finance-mmr/prod/data', '/year=',formatDateTime(addDays(utcNow(),-1),'yyyy'), '/month=',formatDateTime(addDays(utcNow(),-1),'MM'),'/day=',formatDateTime(addDays(utcNow(),-1),'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	}
+}

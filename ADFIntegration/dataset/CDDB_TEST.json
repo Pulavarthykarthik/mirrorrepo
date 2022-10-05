@@ -1,0 +1,20 @@
+{
+	"name": "CDDB_TEST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "cddb"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADW_DEALER_CDDB",
+			"table": "FRAN_AGRMT"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

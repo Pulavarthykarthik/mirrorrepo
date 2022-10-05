@@ -1,0 +1,29 @@
+{
+	"name": "cdm_gen2_dest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "CDM"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('adls-customer-cdm/raw', '/year=',formatDateTime(adddays(dataset().run_date,-1),'yyyy'), '/month=',formatDateTime(adddays(dataset().run_date,-1),'MM'),'/day=',formatDateTime(adddays(dataset().run_date,-1),'dd'),'/')}",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

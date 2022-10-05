@@ -1,0 +1,380 @@
+{
+	"name": "MRA_incremental_child_truncate_reload_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "DBx_Transform",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@pipeline().parameters.notebook_path",
+						"type": "Expression"
+					},
+					"baseParameters": {
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Copy_to_ADW",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "DBx_Transform",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@concat('/MRA/processed/',pipeline().parameters.table_name,'/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+								"type": "Expression"
+							},
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": {
+							"value": "@{concat('TRUNCATE table ',pipeline().parameters.schema_name,'.',pipeline().parameters.table_name)}",
+							"type": "Expression"
+						},
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "base_pattern_csv",
+						"type": "DatasetReference",
+						"parameters": {
+							"source_container_name": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "base_pattern_dw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema_name": {
+								"value": "@pipeline().parameters.schema_name",
+								"type": "Expression"
+							},
+							"table_name": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "sp_update_tbl_status_mra_from_truncate_reload_process",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DBx_Transform",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_PDW_EDW].[sp_PDW_FAILED_TABLES_STATUS]",
+					"storedProcedureParameters": {
+						"ADW_SCHEMA": {
+							"value": {
+								"value": "ADW_DMS_MRA",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ADW_TABLE": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "@activity('DBx_Transform').output?.runError",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "@pipeline()?.TriggeredByPipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "sp_update_tbl_status_mra_from_truncate_reload_tgt_load",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Copy_to_ADW",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_PDW_EDW].[sp_PDW_FAILED_TABLES_STATUS]",
+					"storedProcedureParameters": {
+						"ADW_SCHEMA": {
+							"value": {
+								"value": "ADW_PDW_EDW",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ADW_TABLE": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "Target table truncate reload failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "@pipeline()?.TriggeredByPipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fail_pl_load_issue",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "sp_update_tbl_status_mra_from_truncate_reload_tgt_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "@concat(pipeline().parameters.table_name,': issue somewhere within target load process ')",
+						"type": "Expression"
+					},
+					"errorCode": {
+						"value": "XXX",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Fail_pl_nb_issue",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "sp_update_tbl_status_mra_from_truncate_reload_process",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "@concat(pipeline().parameters.table_name,': issue within databricks notebook ')",
+						"type": "Expression"
+					},
+					"errorCode": {
+						"value": "XXX",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"schema_name": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "MRA/MRA Daily incremental"
+		},
+		"annotations": []
+	}
+}

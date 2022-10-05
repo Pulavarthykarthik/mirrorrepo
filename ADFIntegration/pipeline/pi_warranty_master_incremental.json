@@ -1,0 +1,134 @@
+{
+	"name": "pi_warranty_master_incremental",
+	"properties": {
+		"activities": [
+			{
+				"name": "Execute Pipeline ELC",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pi_warranty_ELC",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"force_run_value": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline Dependent",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline DMG HDR",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pi_warranty_dependent",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"force_run_value": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline DMG HDR",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline ELC",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pi_warranty_Damage_Header",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"force_run_value": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Pipeline FFV",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Execute Pipeline DMG HDR",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pi_warranty_FFV",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"force_run_value": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"force_run": {
+				"type": "string",
+				"defaultValue": "0"
+			},
+			"run_date": {
+				"type": "string",
+				"defaultValue": "yyyy-mm-dd"
+			}
+		},
+		"folder": {
+			"name": "WARRANTY|Remarketing"
+		},
+		"annotations": []
+	}
+}

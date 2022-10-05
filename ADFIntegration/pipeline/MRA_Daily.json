@@ -1,0 +1,139 @@
+{
+	"name": "MRA_Daily",
+	"properties": {
+		"activities": [
+			{
+				"name": "MAIN_ADB",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "INIT_ADB",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/MRA/MRA_Main"
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "INIT_ADB",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Unzip_From_Domain_To_Reservoir",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/MRA/MRA_Transform/MRA_INIT"
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Unzip_From_Domain_To_Reservoir",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "mra_g2_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Uncompress_dest_MRA_v2",
+						"type": "DatasetReference",
+						"parameters": {
+							"file_system": "adls-dms-mra",
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "0001-01-01"
+			}
+		},
+		"variables": {
+			"test": {
+				"type": "Array"
+			}
+		},
+		"folder": {
+			"name": "MRA"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

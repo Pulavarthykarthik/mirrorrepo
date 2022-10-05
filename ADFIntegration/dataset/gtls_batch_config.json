@@ -1,0 +1,32 @@
+{
+	"name": "gtls_batch_config",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "gtls/gtls_daily_incremental/batch_configs",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"table": {
+					"type": "string"
+				},
+				"pipeline": {
+					"type": "string"
+				},
+				"notebook_path": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,303 @@
+{
+	"name": "VDW_DLR_VEH_REL_DW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "VDW"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ID_VEHICLE",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_DLR",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CDE_DLR_VEH_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "DTE_EFF",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "TME_EFF",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_USA_VIN",
+				"type": "char"
+			},
+			{
+				"name": "CDE_VEH_STAT",
+				"type": "char"
+			},
+			{
+				"name": "ALLOC_TO_DLR_YYMM",
+				"type": "char"
+			},
+			{
+				"name": "IND_DLR_TRNDWN",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DLR_STA_CDE",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CUST_FIR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_CUST_LST",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CUST_CITY_NAM",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CUST_STA_CDE",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CUST_ZIP_CDE",
+				"type": "char"
+			},
+			{
+				"name": "ID_SLS_CNSLT",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ID_SLS_MGR",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "CDE_VEH_USE_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "IND_PREO_VEH",
+				"type": "char"
+			},
+			{
+				"name": "IND_STARMARK",
+				"type": "char"
+			},
+			{
+				"name": "ID_UPDT_SRC_USER",
+				"type": "char"
+			},
+			{
+				"name": "IND_ELW",
+				"type": "char"
+			},
+			{
+				"name": "IND_MBC",
+				"type": "char"
+			},
+			{
+				"name": "DTE_DLVY",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CDE_ALTN_TRNSPN",
+				"type": "char"
+			},
+			{
+				"name": "ID_CORP_ACCT",
+				"type": "char"
+			},
+			{
+				"name": "ID_FLEET_MGT",
+				"type": "char"
+			},
+			{
+				"name": "ID_EXEC_ALLOW",
+				"type": "char"
+			},
+			{
+				"name": "IND_C3_VEH",
+				"type": "char"
+			},
+			{
+				"name": "AMT_SALE",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "NAM_CUST_CO",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CUST_STR",
+				"type": "char"
+			},
+			{
+				"name": "CDE_WRNTY_TYPE",
+				"type": "char"
+			},
+			{
+				"name": "NUM_MIL",
+				"type": "decimal",
+				"precision": 7,
+				"scale": 0
+			},
+			{
+				"name": "ID_EMPL_PUR_CTRL",
+				"type": "char"
+			},
+			{
+				"name": "IND_INTNT_SLS_LEAD",
+				"type": "char"
+			},
+			{
+				"name": "DTE_TRD_MODL_YR",
+				"type": "char"
+			},
+			{
+				"name": "DES_TRD_MAKE_1603",
+				"type": "char"
+			},
+			{
+				"name": "DES_TRD_MODL_1604",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DLR_INV",
+				"type": "char"
+			},
+			{
+				"name": "AMT_BASE_DLR_INV",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "AMT_TOT_DLR_INV",
+				"type": "decimal",
+				"precision": 9,
+				"scale": 2
+			},
+			{
+				"name": "DTE_VEH_FLEET_ADDM",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "CDE_ALTRNS_PGM_OPT",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CUST_TEL",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DRVR_FIR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DRVR_LST",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DRVR_STR",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DRVR_CITY_NAM",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DRVR_STA_CDE",
+				"type": "char"
+			},
+			{
+				"name": "ADR_DRVR_ZIP_CDE",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DRVR_TEL",
+				"type": "char"
+			},
+			{
+				"name": "IND_LES",
+				"type": "char"
+			},
+			{
+				"name": "IND_P4_VEH",
+				"type": "char"
+			},
+			{
+				"name": "ID_MB_DLR_SLS_CNSLT",
+				"type": "char"
+			},
+			{
+				"name": "ID_MB_DLR_SLS_MGR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_VEH_BRKR",
+				"type": "char"
+			},
+			{
+				"name": "IND_VEH_BRKR_SLS",
+				"type": "char"
+			},
+			{
+				"name": "IND_VEH_RTL_END_CUS",
+				"type": "char"
+			},
+			{
+				"name": "ADR_CUST_EMAIL",
+				"type": "char"
+			},
+			{
+				"name": "ADR_ED_DLR_REP_EML",
+				"type": "char"
+			},
+			{
+				"name": "ID_NON_FRAN_DLR",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_CREA",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_Vehicle_Vista_EDW",
+			"table": "DLR_VEH_REL"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

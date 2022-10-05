@@ -1,0 +1,30 @@
+{
+	"name": "Experian_dest_v2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('salesforce/',formatDateTime(adddays(dataset().run_date,-1),'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-customer-cdm"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,33 @@
+{
+	"name": "PRTNR_KPI_DAILY_RUN",
+	"properties": {
+		"description": "This trigger is used to run these pipelines :- \n1) Load_DPR_SLS_EXP_Data\n2) Load_FNCL_STMNT_Data\n3) pi_prtnr_truncate_load\n4) PI_LOAD_CPPP_DATA\n5) PI_LOAD_CV_SERVICE_SURVEY_SCORE\n",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_prtnr_truncate_load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-06-24T15:04:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						8
+					]
+				}
+			}
+		}
+	}
+}

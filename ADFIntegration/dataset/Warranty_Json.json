@@ -1,0 +1,22 @@
+{
+	"name": "Warranty_Json",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "wrnty_daily_refresh/pipeline-table-config",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {}
+	}
+}

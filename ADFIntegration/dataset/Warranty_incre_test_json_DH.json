@@ -1,0 +1,22 @@
+{
+	"name": "Warranty_incre_test_json_DH",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "wrnty-opr/pipeline-table-config/damage-sequence-config",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {}
+	}
+}

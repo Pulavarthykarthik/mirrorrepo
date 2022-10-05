@@ -1,0 +1,379 @@
+{
+	"name": "PTSS_Case_update",
+	"properties": {
+		"activities": [
+			{
+				"name": "VALIDATE_FILE_RUN",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/WARRANTY/VALIDATE_FILE_RUN",
+					"baseParameters": {
+						"pipeline_name": {
+							"value": "@pipeline()?.TriggeredByPipelineName",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.table_name",
+							"type": "Expression"
+						},
+						"force_run": {
+							"value": "@pipeline().parameters.force_run",
+							"type": "Expression"
+						},
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Run Notebook",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "VALIDATE_FILE_RUN",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "DBx_Transform",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "/DataEngineering/WARRANTY/WRNTY_INCRE_TRANSFORM/PTSS_CASE_UPDT_JOB_FULL",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "UPDATE_LAST_RUN",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "File_Found",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/WARRANTY/UPDTAE_LAST_RUN_IN_JSON",
+					"baseParameters": {
+						"pipeline_name": {
+							"value": "@pipeline()?.TriggeredByPipelineName",
+							"type": "Expression"
+						},
+						"table_name": {
+							"value": "@pipeline().parameters.table_name",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "File_Found",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Run Notebook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(activity('VALIDATE_FILE_RUN').output.runOutput,'Continue'), equals(activity('DBx_Transform').output.runOutput,'Success'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Copy_to_ADW_STG_copy1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/interim_files/','PTSS_CASE_UPDT3')",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink",
+									"preCopyScript": {
+										"value": "@{concat('TRUNCATE table ',pipeline().parameters.schema_name,'.','PTSS_CASE_UPDT3')}",
+										"type": "Expression"
+									},
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": "PTSS_CASE_UPDT3"
+									}
+								}
+							]
+						},
+						{
+							"name": "Insert_Update_Drop_copy1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@CONCAT('ADW_WRNTY_EDW_STG.','PTSS_CASE_UPDT3','_INSERT_UPDATE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG_copy1_copy1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Insert_Update_Drop_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/interim_files/','PTSS_CASE_UPDT4')",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink",
+									"preCopyScript": {
+										"value": "@{concat('TRUNCATE table ',pipeline().parameters.schema_name,'.','PTSS_CASE_UPDT4')}",
+										"type": "Expression"
+									},
+									"tableOption": "autoCreate",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "Warranty_incre_csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"table_name": "PTSS_CASE_UPDT4"
+									}
+								}
+							]
+						},
+						{
+							"name": "Insert_Update_Drop_copy1_copy1",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG_copy1_copy1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@CONCAT('ADW_WRNTY_EDW_STG.','PTSS_CASE_UPDT4','_INSERT_UPDATE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"schema_name": {
+				"type": "string",
+				"defaultValue": "ADW_WRNTY_EDW_STG"
+			},
+			"table_names": {
+				"type": "array",
+				"defaultValue": [
+					"PTSS_CASE_UPDT3",
+					"PTSS_CASE_UPDT4"
+				]
+			},
+			"container_name": {
+				"type": "string",
+				"defaultValue": "adls-wrnty-edw"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			},
+			"force_run": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "WARRANTY|Remarketing"
+		},
+		"annotations": []
+	}
+}

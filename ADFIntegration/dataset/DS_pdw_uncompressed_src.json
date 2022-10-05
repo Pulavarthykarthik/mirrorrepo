@@ -1,0 +1,36 @@
+{
+	"name": "DS_pdw_uncompressed_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			},
+			"file_path": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "PDW/PDW_ADHOC_EXECUTION"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@concat(dataset().file_path,'/year=',substring(dataset().run_date,0,4),'/month=',substring(dataset().run_date,5,2),'/day=',substring(dataset().run_date,8,2))",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

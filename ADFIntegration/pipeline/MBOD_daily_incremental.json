@@ -1,0 +1,230 @@
+{
+	"name": "MBOD_daily_incremental",
+	"properties": {
+		"activities": [
+			{
+				"name": "Unzip_MBOD",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "domain_g2_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@utcNow('yyyy-MM-dd')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "mbod_reservoir_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_name": "adls-vehicle-mbod",
+							"run_date": {
+								"value": "@utcnow('yyyy-MM-dd')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Lookup_Tables",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Unzip_MBOD",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "mbod_table_config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Kickoff_pipelines",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lookup_Tables').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "if_truncate_and_reload",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(item().pipeline,'truncate_reload')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "execute_insert_update",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "incremental_insert_update",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": "ADW_External_MBOD_STG",
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"container_name": {
+													"value": "@pipeline().parameters.container_name",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@utcnow('yyyy-MM-dd')",
+													"type": "Expression"
+												},
+												"notebook_path": {
+													"value": "@item().notebook_path",
+													"type": "Expression"
+												},
+												"contains_pii": {
+													"value": "@item()?.contains_pii",
+													"type": "Expression"
+												},
+												"config_folder": "mbod-adw"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "execute_truncate_reload",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "incremental_truncate_reload",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"schema_name": "ADW_External_MBOD",
+												"table_name": {
+													"value": "@item().table",
+													"type": "Expression"
+												},
+												"container_name": {
+													"value": "@pipeline().parameters.container_name",
+													"type": "Expression"
+												},
+												"run_date": {
+													"value": "@utcnow('yyyy-MM-dd')",
+													"type": "Expression"
+												},
+												"notebook_path": {
+													"value": "@item().notebook_path",
+													"type": "Expression"
+												},
+												"contains_pii": {
+													"value": "@item()?.contains_pii",
+													"type": "Expression"
+												},
+												"config_folder": "mbod-adw"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"container_name": {
+				"type": "string",
+				"defaultValue": "adls-vehicle-mbod"
+			}
+		},
+		"folder": {
+			"name": "MBOD"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-13T19:50:23Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

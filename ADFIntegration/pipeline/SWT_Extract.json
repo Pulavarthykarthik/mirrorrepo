@@ -1,0 +1,213 @@
+{
+	"name": "SWT_Extract",
+	"properties": {
+		"description": "Incrementally extract based on number of days till run date or full extract ADW SWT tables\n",
+		"activities": [
+			{
+				"name": "Set_Run_Date",
+				"description": "This run_date_var, current EST date, will be used if run_date_param is not provided",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "run_date_var",
+					"value": {
+						"value": "@formatDateTime(\n    addDays(\n        convertTimeZone(\n            utcNow(),\n            'UTC',\n            'Eastern Standard Time'\n        ),0),\n    'yyyy-MM-dd'\n)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Lookup_Tables",
+				"description": "Look up which tables to extract from config file stored in ADLS",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set_Run_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "SWT_Extract_Config",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Extract_For_Each_Table",
+				"description": "Extract data from ADW table to ADLS folder",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lookup_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@if( \n    empty(pipeline().parameters.schema_table),\n    activity('Lookup_Tables').output.value,\n    pipeline().parameters.schema_table\n)",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Extract_ADW_to_DL",
+							"description": "Extract tables based on data_ext_type(inc or full)\nIn case of inc, extract will be performed for the previous num_of_days till the run_date\nFull load will be extracted with run_date_param or run_date_var ",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlDWSource",
+									"sqlReaderQuery": {
+										"value": "@concat(\n    'SELECT * FROM ',\n    item().schema,'.',\n    item().table,\n    if(\n        equals(pipeline().parameters.data_ext_type,'inc'),\n        concat(\n                ' WHERE CAST(DTS_DW_UPDT AS DATE) BETWEEN ',\n\t\t\t\t'DATEADD(DAY,-',\n\t\t\t\tstring(sub(pipeline().parameters.num_of_days,1)),\n\t\t\t\t',''',\n\t\t\t\tcoalesce(\n\t\t\t\t\tpipeline().parameters.run_date_param,\n\t\t\t\t\tvariables('run_date_var')\n\t\t\t\t),\n\t\t\t\t''')',\n\t\t\t\t' AND ',\n\t\t\t\t'''',\n                coalesce(\n\t\t\t\t\tpipeline().parameters.run_date_param,\n\t\t\t\t\tvariables('run_date_var')\n\t\t\t\t),\n\t\t\t\t'''',\n\t\t\t\tif(\n\t\t\t\t\tequals(item().table,'VEHICLE'),\n\t\t\t\t\t' AND ID_USA_VIN IS NOT NULL',\n\t\t\t\t\t''\t\t\n\t\t\t\t)\n            ),\n\t\tif(\n\t\t\tequals(item().table,'VEHICLE'),\n\t\t\t' WHERE ID_USA_VIN IS NOT NULL',\n\t\t\t''\t\t\n\t\t)\n    )\n)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ""
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SWT_AzureSynapseAnalytics",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "SWT_Delimited_Zip_File",
+									"type": "DatasetReference",
+									"parameters": {
+										"table": {
+											"value": "@item().table",
+											"type": "Expression"
+										},
+										"date": {
+											"value": "@coalesce(\n    pipeline().parameters.run_date_param,\n    variables('run_date_var')\n)",
+											"type": "Expression"
+										},
+										"num_of_days": {
+											"value": "@coalesce(pipeline().parameters.num_of_days,0)",
+											"type": "Expression"
+										},
+										"data_ext_type": {
+											"value": "@pipeline().parameters.data_ext_type",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Archive_Files",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Set_Run_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "SWT_Archive",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"Date": {
+							"value": "@addDays(\n    coalesce(\n        pipeline().parameters.run_date_param,\n        variables('run_date_var')\n    ),\n    -1\n)",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"num_of_days": {
+				"type": "int",
+				"defaultValue": 1
+			},
+			"data_ext_type": {
+				"type": "string",
+				"defaultValue": "inc"
+			},
+			"run_date_param": {
+				"type": "string",
+				"defaultValue": null
+			},
+			"schema_table": {
+				"type": "array",
+				"defaultValue": []
+			}
+		},
+		"variables": {
+			"run_date_var": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "ARAAS/SWT"
+		},
+		"annotations": []
+	}
+}

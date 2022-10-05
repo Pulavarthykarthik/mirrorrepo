@@ -1,0 +1,30 @@
+{
+	"name": "pdw_batch_details",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "PDW_Batch_details.json",
+				"folderPath": "pdw/pdw_daily_incremental",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"batch_name": {
+					"type": "string"
+				},
+				"execution_order": {
+					"type": "string"
+				}
+			}
+		}
+	}
+}

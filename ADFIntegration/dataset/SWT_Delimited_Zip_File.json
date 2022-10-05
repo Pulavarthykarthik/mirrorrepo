@@ -1,0 +1,48 @@
+{
+	"name": "SWT_Delimited_Zip_File",
+	"properties": {
+		"description": "SWT ADW to EDW extraction",
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table": {
+				"type": "string"
+			},
+			"date": {
+				"type": "string"
+			},
+			"num_of_days": {
+				"type": "int"
+			},
+			"data_ext_type": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ARAAS/SWT"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(\n    dataset().table,\n    if(\n        equals(dataset().data_ext_type,'inc'),\n        '-D-',\n        '-D-'\n    ),\n    formatDateTime(dataset().date,'MMddyyyy'),\n    '.zip'\n)",
+					"type": "Expression"
+				},
+				"folderPath": "SWT/processed",
+				"fileSystem": "adls-araas"
+			},
+			"columnDelimiter": "\u0001",
+			"rowDelimiter": "\n",
+			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Optimal",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": []
+	}
+}

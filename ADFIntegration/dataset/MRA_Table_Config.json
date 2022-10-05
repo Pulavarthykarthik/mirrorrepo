@@ -1,0 +1,22 @@
+{
+	"name": "MRA_Table_Config",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MRA"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "MRA_daily_Incremental",
+				"fileSystem": "data-engineering"
+			}
+		},
+		"schema": {}
+	}
+}

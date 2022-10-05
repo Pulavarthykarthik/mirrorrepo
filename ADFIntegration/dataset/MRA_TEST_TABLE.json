@@ -1,0 +1,20 @@
+{
+	"name": "MRA_TEST_TABLE",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Test"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "ADW_DMS_MRA",
+			"table": "DMS_RO_HDR_HIST"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

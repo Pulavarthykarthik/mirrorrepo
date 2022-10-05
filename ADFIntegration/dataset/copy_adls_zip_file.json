@@ -1,0 +1,58 @@
+{
+	"name": "copy_adls_zip_file",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			},
+			"delimiter": {
+				"type": "string"
+			},
+			"Escape": {
+				"type": "string"
+			},
+			"Header": {
+				"type": "bool"
+			},
+			"Quote": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ARAAS"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": {
+				"value": "@dataset().delimiter",
+				"type": "Expression"
+			},
+			"compressionCodec": "ZipDeflate",
+			"escapeChar": {
+				"value": "@dataset().Escape",
+				"type": "Expression"
+			},
+			"firstRowAsHeader": {
+				"value": "@dataset().Header",
+				"type": "Expression"
+			},
+			"quoteChar": {
+				"value": "@dataset().Quote",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

@@ -1,0 +1,388 @@
+{
+	"name": "DMS_RO_PT_DTL_STG",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get Metadata1",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "DS_DMS_RO_PT_DTL_STG",
+						"type": "DatasetReference"
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureDataLakeStoreReadSettings",
+						"recursive": true
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get Metadata1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get Metadata1').output.childitems",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureDataLakeStoreReadSettings",
+										"recursive": false,
+										"wildcardFileName": {
+											"value": "@{item().name}",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink",
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"parallelCopies": 16,
+								"enableSkipIncompatibleRow": true,
+								"dataIntegrationUnits": 16,
+								"translator": {
+									"type": "TabularTranslator",
+									"mappings": [
+										{
+											"source": {
+												"name": "ID_DLR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "ID_DLR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NUM_DMS_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NUM_DMS_RO",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "DTE_RO_CLOS_ORGNL",
+												"type": "String"
+											},
+											"sink": {
+												"name": "DTE_RO_CLOS_ORGNL",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "NUM_PT_LIN_ITM_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NUM_PT_LIN_ITM_RO",
+												"type": "Int16"
+											}
+										},
+										{
+											"source": {
+												"name": "NUM_DMS_LIN_ITM_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NUM_DMS_LIN_ITM_RO",
+												"type": "Int16"
+											}
+										},
+										{
+											"source": {
+												"name": "CDE_REC_TYP_STG",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CDE_REC_TYP_STG",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_PT_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_PT_RO",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_PT_CST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_PT_CST",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_PT_MSRP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_PT_MSRP",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "QTY_DMS_PT_SLD_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "QTY_DMS_PT_SLD_RO",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "IND_PT_DTL_CHD_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "IND_PT_DTL_CHD_RO",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CDE_DMS_RO_PAY_TYP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CDE_DMS_RO_PAY_TYP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "CDE_VND_RO_PAY_TYP",
+												"type": "String"
+											},
+											"sink": {
+												"name": "CDE_VND_RO_PAY_TYP",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NUM_DMS_PT_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NUM_DMS_PT_RO",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "IND_MBUSA_PRT_NUM",
+												"type": "String"
+											},
+											"sink": {
+												"name": "IND_MBUSA_PRT_NUM",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NUM_PART_DB",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NUM_PART_DB",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NAM_INTNL_TRNSL_PT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NAM_INTNL_TRNSL_PT",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "DES_DMS_PT_RO",
+												"type": "String"
+											},
+											"sink": {
+												"name": "DES_DMS_PT_RO",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NAM_DMS_PT_MFR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NAM_DMS_PT_MFR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "NAM_MBUSA_PT_MFR",
+												"type": "String"
+											},
+											"sink": {
+												"name": "NAM_MBUSA_PT_MFR",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_TOT_CST",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_TOT_CST",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_TOT_PRC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_TOT_PRC",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "AMT_DMS_UNIT_PRC",
+												"type": "String"
+											},
+											"sink": {
+												"name": "AMT_DMS_UNIT_PRC",
+												"type": "Decimal"
+											}
+										},
+										{
+											"source": {
+												"name": "DTS_CREA",
+												"type": "String"
+											},
+											"sink": {
+												"name": "DTS_CREA",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "ID_CREA_USER",
+												"type": "String"
+											},
+											"sink": {
+												"name": "ID_CREA_USER",
+												"type": "String"
+											}
+										},
+										{
+											"source": {
+												"name": "DTS_LAST_UPDT",
+												"type": "String"
+											},
+											"sink": {
+												"name": "DTS_LAST_UPDT",
+												"type": "DateTime"
+											}
+										},
+										{
+											"source": {
+												"name": "ID_LAST_UPDT_USER",
+												"type": "String"
+											},
+											"sink": {
+												"name": "ID_LAST_UPDT_USER",
+												"type": "String"
+											}
+										}
+									]
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_DMS_RO_PT_DTL_STG",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DD_DMS_RO_PT_DTL_STG",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

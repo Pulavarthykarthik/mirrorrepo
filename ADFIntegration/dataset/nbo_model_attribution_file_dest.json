@@ -1,0 +1,23 @@
+{
+	"name": "nbo_model_attribution_file_dest",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SALESFORCE"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('adls-salesforce/attribution/raw', '/year=',formatDateTime(adddays(utcnow(),-1),'yyyy'), '/month=',formatDateTime(adddays(utcnow(),-1),'MM'),'/day=',formatDateTime(adddays(utcnow(),-1),'dd'),'/')}",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

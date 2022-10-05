@@ -1,0 +1,110 @@
+{
+	"name": "DD_DMS_INV_PT_DTL_STG_TESTJB",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ID_DLR",
+				"type": "char"
+			},
+			{
+				"name": "NUM_DMS_INV",
+				"type": "char"
+			},
+			{
+				"name": "DTE_INV_CLOS_ORGNL",
+				"type": "date"
+			},
+			{
+				"name": "NUM_DMS_LIN_INV",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "CDE_REC_TYP_STG",
+				"type": "char"
+			},
+			{
+				"name": "QTY_DMS_PT_SLD_INV",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 0
+			},
+			{
+				"name": "AMT_DMS_PT_PRC_INV",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "AMT_DMS_PT_TOT_INV",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "AMT_DMS_PT_CST",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "AMT_DMS_PT_MSRP",
+				"type": "decimal",
+				"precision": 10,
+				"scale": 2
+			},
+			{
+				"name": "NUM_DMS_PT_INV",
+				"type": "char"
+			},
+			{
+				"name": "IND_MBUSA_PRT_NUM",
+				"type": "char"
+			},
+			{
+				"name": "NUM_PART_DB",
+				"type": "char"
+			},
+			{
+				"name": "NAM_INTNL_TRNSL_PT",
+				"type": "char"
+			},
+			{
+				"name": "DTS_CREA",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_LAST_UPDT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_LAST_UPDT_USER",
+				"type": "char"
+			},
+			{
+				"name": "DES_DMS_PT_INV",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "EDW_DMS_MRA",
+			"table": "DMS_INV_PT_DTL_STG_TESTJB"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

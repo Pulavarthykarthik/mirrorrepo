@@ -1,0 +1,1575 @@
+{
+	"name": "DMS_RO_HDR_STG",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureDataLakeStoreReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": "TRUNCATE TABLE EDW_DMS_MRA.DMS_RO_HDR_STG",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"parallelCopies": 6,
+					"enableSkipIncompatibleRow": true,
+					"dataIntegrationUnits": 32,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_DLR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DLR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_RO_CLOS_ORGNL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_RO_CLOS_ORGNL",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_REC_TYP_STG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_REC_TYP_STG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_USA_VIN_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_USA_VIN_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_VEH_TYP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_VEH_TYP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_RO_CLOS_UPD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_RO_CLOS_UPD",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_ORGNL_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_ORGNL_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_VND_CP_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_VND_CP_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_VND_WARR_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_VND_WARR_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_VND_INT_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_VND_INT_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_VND_TOT_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_VND_TOT_RO",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_CP_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_CP_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_INT_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_INT_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_WARR_STOT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_WARR_STOT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_RO",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_SLS_TAX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_SLS_TAX",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_DMS_OPEN_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_DMS_OPEN_RO",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DMS_TYP_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DMS_TYP_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_CUS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_CUS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DMS_CUS_TYP_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DMS_CUS_TYP_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_BUS_CUS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_BUS_CUS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_FULL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_FULL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_STD_CUS_FULL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_STD_CUS_FULL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_PFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_PFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_FIR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_FIR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_MID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_MID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_LST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_LST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_SFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_SFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_LIN1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_LIN1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_LIN2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_LIN2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_CITY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_CITY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_ST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_ST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_ZIP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_ZIP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_CUS_HOM_PHN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_CUS_HOM_PHN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_CUS_WRK_PHN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_CUS_WRK_PHN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_EML",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_EML",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMS_CUS_DNC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMS_CUS_DNC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMS_CUS_DNEML",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMS_CUS_DNEML",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMS_CUS_DNML",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMS_CUS_DNML",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DMS_SA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DMS_SA",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_FULL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_FULL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_FIR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_FIR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_LST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_LST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_VIN_VLDT_STAT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_VIN_VLDT_STAT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_MODL_YR_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_MODL_YR_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_VEH_MFR_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_VEH_MFR_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_VEH_MODL_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_VEH_MODL_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "QTY_VEH_MIL_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QTY_VEH_MIL_RO",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_MODL_YR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_MODL_YR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_MODL_CLASS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_MODL_CLASS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_MODL_CLASS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_MODL_CLASS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_BAUM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_BAUM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PPM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PPM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_ELW",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_ELW",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_PT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_PT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_LBR_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_LBR_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_SBLT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_SBLT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_GOG_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_GOG_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_AGG_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_AGG_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_PT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_PT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_LBR_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_LBR_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_PT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_PT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_LBR_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_LBR_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_SBLT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_SBLT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_GOG_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_GOG_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_AGG_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_AGG_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_CUS_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_CUS_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_SBLT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_SBLT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_GOG_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_GOG_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_AGG_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_AGG_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_PT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_PT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_LBR_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_LBR_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_SBLT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_SBLT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_GOG_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_GOG_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_AGG_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_AGG_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_WRNTY_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_WRNTY_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_PT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_PT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_LBR_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_LBR_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_SBLT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_SBLT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_GOG_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_GOG_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_AGG_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_AGG_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_PT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_PT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_LBR_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_LBR_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_SBLT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_SBLT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_GOG_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_GOG_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_AGG_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_AGG_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_INTL_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_INTL_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_PT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_PT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_LBR_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_LBR_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_SBLT_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_SBLT_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_GOG_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_GOG_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_AGG_MSC_PRC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_AGG_MSC_PRC",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_PT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_PT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_LBR_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_LBR_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_SBLT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_SBLT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_GOG_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_GOG_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_AGG_MSC_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_AGG_MSC_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_TOT_RO_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_TOT_RO_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_PRT_CST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_PRT_CST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "QTY_DMS_TOT_LBR_HRS_ACTL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QTY_DMS_TOT_LBR_HRS_ACTL",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "QTY_DMS_TOT_LBR_HRS_BILL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "QTY_DMS_TOT_LBR_HRS_BILL",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_DMS_VEH_TRNS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_DMS_VEH_TRNS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_DMS_VEH_BDY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_DMS_VEH_BDY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_DMS_VEH_ENG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_DMS_VEH_ENG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_DMS_EXT_CLR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_DMS_EXT_CLR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_LIC_PLT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_LIC_PLT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DMS_CNTCT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DMS_CNTCT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_ESC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_ESC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_PFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_PFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_MI",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_MI",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_SA_SFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_SA_SFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_JOB_TTL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_JOB_TTL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_DIST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_DIST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CTRY",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_CUS_HOM_PHN_EXT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_CUS_HOM_PHN_EXT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_CUS_HOM_PHN_CTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_CUS_HOM_PHN_CTRY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_BUSN_PHN_EXT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_BUSN_PHN_EXT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_BUSN_PHN_CTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_BUSN_PHN_CTRY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_BUSN_EML",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_BUSN_EML",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_DMS_BRTH",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_DMS_BRTH",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMS_ALW_SLCIT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMS_ALW_SLCIT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_ODMTR_OUT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_ODMTR_OUT",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_DMS_VEH_PU",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_DMS_VEH_PU",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMS_APPT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMS_APPT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_DMS_PMT_MTHD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_DMS_PMT_MTHD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TXT_DMS_TECH_COM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TXT_DMS_TECH_COM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "TXT_DMS_CUS_COM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TXT_DMS_CUS_COM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_CREA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_CREA",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_CREA_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_CREA_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_LAST_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_LAST_UPDT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_LAST_UPDT_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_LAST_UPDT_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_RA_RO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_RA_RO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_EXP_SRV_CP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_EXP_SRV_CP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_EXP_SRV_WRNTY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_EXP_SRV_WRNTY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PPI_DMG_CDE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PPI_DMG_CDE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_PPM_PT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_PPM_PT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_PPM_LBR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_PPM_LBR",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_ELW_PT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_ELW_PT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_ELW_LBR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_ELW_LBR",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_CRT_STLMT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_CRT_STLMT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_TR_ASST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_TR_ASST",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_DMS_RO_LBR_DTL_STG_T",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DD_DMS_RO_HDR_STG",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

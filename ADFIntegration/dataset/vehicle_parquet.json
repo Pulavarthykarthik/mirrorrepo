@@ -1,0 +1,661 @@
+{
+	"name": "vehicle_parquet",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_DEV_ADLS_RSV",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ETC"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "VEHICLE_20190807",
+				"folderPath": "MBUSA/Parts/2019/08"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "ADR_CUST_EMAIL",
+				"type": "UTF8"
+			},
+			{
+				"name": "ADR_ED_DLR_REP_EML",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_BASE_DLR_INV",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_BASE_FCTRY_PRC",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_BASE_MSRP",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_TOT_DLR_INV",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_TOT_FCTRY_PRC",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_TOT_MSRP",
+				"type": "UTF8"
+			},
+			{
+				"name": "AMT_VEH_FLR_PRC",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_ALTN_TRNSPN",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_BAUM",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_BUILT_FOR_CTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_DECD_PERD",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_GEO_LIN",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_LTST_PRI",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_LTST_VEH_STAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_MBF_FD_SNT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_MODL_CLASS",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_MODL_ENGINE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_MODL_SERIES",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_MODL_VAR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_NATL_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_NATL_TYPE_EXT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PAINT_LOW",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PAINT_UPP",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PHY_LOC",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PLANT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PLN_DECD_PERD",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_PORT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_POST_RETL_STAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_RADIO_SECURITY",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_RDO_ESN_SRC",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_SATL_RDO_SUBS",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_SLS_TYP",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_SPARTE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_STRNG",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TIRE1_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TIRE2_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TIRE3_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TIRE4_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TIRE5_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_TRNS",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_UPHOL",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_CFG_CHG",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_KEY_CUT",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_RECALL",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_STAT_CATG",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_STAT_GRP",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_TYP",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_VEH_USE_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "CDE_WORLD_VEH_MFR",
+				"type": "UTF8"
+			},
+			{
+				"name": "CNT_PRC_CHG",
+				"type": "UTF8"
+			},
+			{
+				"name": "DES_BUILT_FOR_CTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DES_MODL",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_ACTL_PRODN",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_CONSIGNMENT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_DLR_VEH_ORD",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_ETA_PORT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_FRZN_PFD_CHG",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_INIT_CUSTM_CLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_CUSTM_CLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_CUST_RETL",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_DLR_SET",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_NEW_WRNTY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_PFD_CHG",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_PRI",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_RETL_CNCL",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_RETL_RPTD",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_STAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_STAT_CATG",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_STAT_GRP",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_SURV",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_VPC_RECD",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_WHSLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_LTST_WHSL_CNCL",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_MBF_FD_SNT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_MODL_YR",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_ON_DLR_LOT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_PORD_CREA",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_PORT_RECD",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_POST_RETL_STAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_REC_LOCL_UPFTR",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_REQR_EURO_DLVY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_SCHD_EXT_FCTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_SHP_SLG",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_SNT_LOCL_UPFTR",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_SRC_DATA_UPDT",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_VEH_NEW_DEMO",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_VEH_USE_TYPE",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTE_VPC_COMPL_EST",
+				"type": "UTF8"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_ACSRY_COMBO",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_DBAG_VIN",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_ELEC_VEH_BTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_FCTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_FIN_VIN",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_LTST_DLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_LTST_VPC",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_LTST_WHSL_DLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_MODEL",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_NON_FRAN_DLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_USA_VIN",
+				"type": "UTF8"
+			},
+			{
+				"name": "ID_VEHICLE",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_ACTIVE_VEH",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_CKD",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_DESIGNO",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_DISCLSR",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_DLR_ADD_ACSRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_DMG",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_ECS",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_ELW",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_EX_CVP",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_FLEX_FUEL",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_HOLD",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_INVLD_ACSY_CFG",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_LTST_ASSGN",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_LTST_PFD",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_MBC",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_MNL_TRNS",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_MONRY_LBL",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_NATL_FLT",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_PICKUP_DLR",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_PREO_VEH",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_PZEV",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_RECL_STOP_SLS",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_SPCL_ORDER",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_STARMARK",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_STOCK",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_TRD_OPEN",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_UPFTR_CDE",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_VEH_EXPORTED",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_VLDT_STAT",
+				"type": "UTF8"
+			},
+			{
+				"name": "IND_WRNTY_PGM",
+				"type": "UTF8"
+			},
+			{
+				"name": "NAM_LTST_CUST_FIR",
+				"type": "UTF8"
+			},
+			{
+				"name": "NAM_LTST_CUST_LST",
+				"type": "UTF8"
+			},
+			{
+				"name": "NAM_VEH_TIRE_BRND_FCTY",
+				"type": "UTF8"
+			},
+			{
+				"name": "NAM_VESSEL",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_CAN",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_DLR_STK",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_DLR_VEH_ORD",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_ENGNE",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_FCTRY",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_PORD",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SATL_RDO_ESN",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SATL_RDO_ESN2",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SDARS_PLT_1",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SDARS_PLT_2",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SDARS_PLT_3",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_SHPMT",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_TRANS_SERIAL",
+				"type": "UTF8"
+			},
+			{
+				"name": "NUM_VEH_SERIAL",
+				"type": "UTF8"
+			},
+			{
+				"name": "QTY_VEH_MILEAGE",
+				"type": "UTF8"
+			},
+			{
+				"name": "TME_SRC_DATA_UPDT",
+				"type": "UTF8"
+			},
+			{
+				"name": "TXT_9000_COMMENT",
+				"type": "UTF8"
+			},
+			{
+				"name": "TXT_ASGMT",
+				"type": "UTF8"
+			},
+			{
+				"name": "TXT_DLR_COMMENT",
+				"type": "UTF8"
+			},
+			{
+				"name": "TXT_VEH_REPL_COM",
+				"type": "UTF8"
+			},
+			{
+				"name": "TXT_VEH_STAT_COM",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

@@ -1,0 +1,235 @@
+{
+	"name": "pi_load_org_kpi_hist_data",
+	"properties": {
+		"activities": [
+			{
+				"name": "HistoricalDataNotebook",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": "/DataEngineering/Partner-KPI/ORG_KPI_Historical_Data_Load",
+					"baseParameters": {
+						"file_name": "KPI_HISTORICAL_DATA*"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Copy_HistoricalData",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "HistoricalDataNotebook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "kpiHistoricalData/processed/",
+							"wildcardFileName": "*.parquet",
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Upsert",
+						"upsertSettings": {
+							"keys": [
+								"CDE_ORG",
+								"ID_KPI",
+								"DTE_YR",
+								"DTE_QTR",
+								"DTE_MTH"
+							],
+							"interimSchemaName": ""
+						},
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CDE_ORG",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "CDE_ORG",
+									"type": "String",
+									"physicalType": "varchar"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_KPI",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_KPI",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_MTH",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DTE_MTH",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_QTR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DTE_QTR",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_YR",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DTE_YR",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_KPI_ACTL_VAL",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "NUM_KPI_ACTL_VAL",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 3,
+									"precision": 14
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DW_CREA_USER",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_DW_CREA_USER",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_CREA",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_CREA",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DW_UPDT_USER",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "ID_DW_UPDT_USER",
+									"type": "String",
+									"physicalType": "char"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_UPDT",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_UPDT",
+									"type": "DateTime",
+									"physicalType": "datetime2"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_PROCESSED_PARQUET",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_name": "adls-partner-kpi"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_ADW_TABLES_ADF",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaName": "ADW_PRTNR",
+							"TableName": "PRTNR_MGT_ORG_KPI"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "PARTNER_KPI"
+		},
+		"annotations": []
+	}
+}

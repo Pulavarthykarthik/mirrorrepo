@@ -1,0 +1,21 @@
+{
+	"name": "move_2_dev",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ETC"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": "adls-mss-edw"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

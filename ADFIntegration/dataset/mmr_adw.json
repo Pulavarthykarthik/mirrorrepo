@@ -1,0 +1,34 @@
+{
+	"name": "mmr_adw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"DWTable": {
+				"type": "string"
+			},
+			"DWSchema": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "MMR"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@{dataset().DWSchema}",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@{dataset().DWTable}",
+				"type": "Expression"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

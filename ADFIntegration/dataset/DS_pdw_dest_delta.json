@@ -1,0 +1,43 @@
+{
+	"name": "DS_pdw_dest_delta",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Delta_watermark/PDW_Daily_Refresh"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(dataset().table_name,'-',substring(dataset().run_date,0,4),substring(dataset().run_date,5,2),substring(dataset().run_date,8,2),'.txt.gz')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@concat('raw/edw/',dataset().run_date,'/DAPS+MS+PDW+',dataset().run_date,'.zip')",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container_name",
+					"type": "Expression"
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

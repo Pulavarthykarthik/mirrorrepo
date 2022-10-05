@@ -1,0 +1,156 @@
+{
+	"name": "jsonMergeSource",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "connected_car"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "xentry/2021-03-06/DAPS+AfterSales+Xentry+2021-03-06.zip",
+				"fileSystem": "adls-aftersales-xentry"
+			}
+		},
+		"schema": {
+			"type": "object",
+			"properties": {
+				"offerNumber": {
+					"type": "string"
+				},
+				"creationDate": {
+					"type": "string"
+				},
+				"dealerCode": {
+					"type": "string"
+				},
+				"customer": {
+					"type": "object",
+					"properties": {
+						"salutation": {
+							"type": "string"
+						},
+						"firstName": {
+							"type": "string"
+						},
+						"lastName": {
+							"type": "string"
+						},
+						"email": {
+							"type": "string"
+						},
+						"businessType": {
+							"type": "string"
+						},
+						"phone": {
+							"type": "string"
+						},
+						"preferredCommunicationChannels": {
+							"type": "array",
+							"items": {
+								"type": "string"
+							}
+						},
+						"address": {
+							"type": "object",
+							"properties": {
+								"street": {
+									"type": "string"
+								},
+								"city": {
+									"type": "string"
+								},
+								"zipCode": {
+									"type": "string"
+								}
+							}
+						}
+					}
+				},
+				"contactPerson": {
+					"type": "object",
+					"properties": {
+						"salutation": {
+							"type": "string"
+						},
+						"firstName": {
+							"type": "string"
+						},
+						"lastName": {
+							"type": "string"
+						},
+						"phone": {
+							"type": "string"
+						}
+					}
+				},
+				"vehicle": {
+					"type": "object",
+					"properties": {
+						"vin": {
+							"type": "string"
+						},
+						"salesDesignation": {
+							"type": "string"
+						},
+						"type": {
+							"type": "string"
+						},
+						"make": {
+							"type": "string"
+						},
+						"year": {
+							"type": "string"
+						},
+						"model": {
+							"type": "string"
+						},
+						"trim": {
+							"type": "string"
+						},
+						"mileage": {
+							"type": "string"
+						}
+					}
+				},
+				"provider": {
+					"type": "object",
+					"properties": {
+						"providerId": {
+							"type": "string"
+						},
+						"providerName": {
+							"type": "string"
+						}
+					}
+				},
+				"itemGroups": {
+					"type": "array",
+					"items": {
+						"type": "object",
+						"properties": {
+							"leadTopic": {
+								"type": "string"
+							},
+							"description": {
+								"type": "string"
+							},
+							"serviceCode": {
+								"type": "string"
+							},
+							"trackingId": {
+								"type": "string"
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

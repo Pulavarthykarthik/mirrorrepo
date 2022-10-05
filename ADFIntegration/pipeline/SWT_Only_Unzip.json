@@ -1,0 +1,96 @@
+{
+	"name": "SWT_Only_Unzip",
+	"properties": {
+		"activities": [
+			{
+				"name": "Extract_Zip_Files_Daily",
+				"description": "Fetching the daily data zip file from Daimler ADLS and extract it over reservoir ADLS",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set_Run_Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SWT_compressed",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@variables('run_date')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SWT_uncompressed",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@variables('run_date')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Set_Run_Date",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "run_date",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','Eastern Standard Time'),'yyyy-MM-dd')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"run_date": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "SWT_Data_Ingestion"
+		},
+		"annotations": []
+	}
+}

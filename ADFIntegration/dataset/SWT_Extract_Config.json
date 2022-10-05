@@ -1,0 +1,23 @@
+{
+	"name": "SWT_Extract_Config",
+	"properties": {
+		"description": "Get the list of schema tables to extract",
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ARAAS/SWT"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "SWT/config",
+				"fileSystem": "adls-araas"
+			}
+		},
+		"schema": {}
+	}
+}

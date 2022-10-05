@@ -1,0 +1,33 @@
+{
+	"name": "PRTNR_KPI_DELTA_LOAD",
+	"properties": {
+		"description": "This trigger is used to run \"pi_prtnr_delta_load\" pipeline",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pi_prtnr_delta_load",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2022-06-24T15:02:00",
+				"timeZone": "Eastern Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}

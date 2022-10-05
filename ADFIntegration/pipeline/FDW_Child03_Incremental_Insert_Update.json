@@ -1,0 +1,457 @@
+{
+	"name": "FDW_Child03_Incremental_Insert_Update",
+	"properties": {
+		"activities": [
+			{
+				"name": "DBx_Transform",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"notebookPath": {
+						"value": "@pipeline().parameters.notebook_path",
+						"type": "Expression"
+					},
+					"baseParameters": {
+						"run_date": {
+							"value": "@pipeline().parameters.run_date",
+							"type": "Expression"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "File_Found",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "DBx_Transform",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('DBx_Transform').output.runOutput,'Success')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Create_STG_TBL",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_CREATE_STG_TBL')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Copy_to_ADW_STG",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Create_STG_TBL",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ParquetSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@concat('/processed/cofico/',pipeline().parameters.table_name,'/year=',substring(pipeline().parameters.run_date,0,4),'/month=',substring(pipeline().parameters.run_date,5,2),'/day=',substring(pipeline().parameters.run_date,8,2))",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.parquet",
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink"
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DS_base_pattern_parquet",
+									"type": "DatasetReference",
+									"parameters": {
+										"source_container_name": "@pipeline().parameters.container_name"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DS_fdw_base_pattern_dw",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema_name": "@pipeline().parameters.schema_name",
+										"table_name": "@pipeline().parameters.table_name"
+									}
+								}
+							]
+						},
+						{
+							"name": "Insert_Update_Drop",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": {
+									"value": "@concat(pipeline().parameters.schema_name,'.',pipeline().parameters.table_name, '_INSERT_UPDATE')",
+									"type": "Expression"
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Set RowsCopied",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Copy_to_ADW_STG",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "vRowsCopied",
+								"value": {
+									"value": "@string(activity('Copy_to_ADW_STG').output?.rowsCopied)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "sp_WaterMark_TBL",
+							"type": "SqlServerStoredProcedure",
+							"dependsOn": [
+								{
+									"activity": "Insert_Update_Drop",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"storedProcedureName": "@concat(pipeline().parameters.watermark_schema_name,'.',pipeline().parameters.watermark_sp_name)",
+								"storedProcedureParameters": {
+									"ADW_TABLE": {
+										"value": {
+											"value": "@pipeline().parameters.table_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"WATERMARK_DT_UTC": {
+										"value": {
+											"value": "@pipeline().parameters.run_date",
+											"type": "Expression"
+										},
+										"type": "Datetime"
+									},
+									"PIPELINE_RUN_ID": {
+										"value": {
+											"value": "@pipeline().RunId",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"FILE_EXISTS_STATUS": {
+										"value": {
+											"value": "@variables('vFileExists')",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ADW_SCHEMA": {
+										"value": {
+											"value": "@pipeline().parameters.schema_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"PIPELINE_NAME": {
+										"value": {
+											"value": "@pipeline().Pipeline",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"SOURCE_FILE_NAME": {
+										"value": null,
+										"type": "String"
+									},
+									"PARENT_PIPELINE": {
+										"value": {
+											"value": "@pipeline()?.TriggeredByPipelineName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TRIGGER_TYPE": {
+										"value": {
+											"value": "@pipeline().TriggerType",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"TRIGGER_NAME": {
+										"value": {
+											"value": "@pipeline().TriggerName",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"CONTAINER_NAME": {
+										"value": {
+											"value": "@pipeline().parameters.container_name",
+											"type": "Expression"
+										},
+										"type": "String"
+									},
+									"ROW_COUNT": {
+										"value": {
+											"value": "@int(variables('vRowsCopied'))",
+											"type": "Expression"
+										},
+										"type": "Int32"
+									},
+									"EXCEPTIONS": {
+										"value": {
+											"value": "@activity('Insert_Update_Drop').output?.errors",
+											"type": "Expression"
+										},
+										"type": "String"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "AzureSqlDW2",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "sp_WaterMark_Databricks_failure",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "DBx_Transform",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "@concat(pipeline().parameters.watermark_schema_name,'.',pipeline().parameters.watermark_sp_name)",
+					"storedProcedureParameters": {
+						"ADW_TABLE": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"WATERMARK_DT_UTC": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"FILE_EXISTS_STATUS": {
+							"value": null,
+							"type": "String"
+						},
+						"ADW_SCHEMA": {
+							"value": {
+								"value": "@pipeline().parameters.schema_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"SOURCE_FILE_NAME": {
+							"value": null,
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "@pipeline()?.TriggeredByPipelineName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_TYPE": {
+							"value": {
+								"value": "@pipeline().TriggerType",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"TRIGGER_NAME": {
+							"value": {
+								"value": "@pipeline().TriggerName",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"CONTAINER_NAME": {
+							"value": {
+								"value": "@pipeline().parameters.container_name",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ROW_COUNT": {
+							"value": null,
+							"type": "Int32"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "@activity('DBx_Transform').output?.runError",
+								"type": "Expression"
+							},
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"schema_name": {
+				"type": "string"
+			},
+			"table_name": {
+				"type": "string"
+			},
+			"container_name": {
+				"type": "string"
+			},
+			"run_date": {
+				"type": "string"
+			},
+			"notebook_path": {
+				"type": "string"
+			},
+			"config_folder": {
+				"type": "string"
+			},
+			"watermark_schema_name": {
+				"type": "string"
+			},
+			"watermark_sp_name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"vFileExists": {
+				"type": "Boolean",
+				"defaultValue": true
+			},
+			"vRowsCopied": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "FDW/FDW_Daily_Incremental"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:38Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

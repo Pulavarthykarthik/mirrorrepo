@@ -1,0 +1,373 @@
+{
+	"name": "DMS_INV_HDR_STG",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureDataLakeStoreReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": "SET XACT_ABORT ON\nTRUNCATE TABLE EDW_DMS_MRA.DMS_INV_HDR_STG",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID_DLR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DLR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_INV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_INV_CLOS_ORGNL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_INV_CLOS_ORGNL",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_REC_TYP_STG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_REC_TYP_STG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_CUS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_CUS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_INV_CLOS_UPD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_INV_CLOS_UPD",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DMS_ORGNL_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DMS_ORGNL_INV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_CST_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_CST_INV",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_TOT_PRC_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_TOT_PRC_INV",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_DMS_SLS_TAX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_DMS_SLS_TAX",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_FULL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_FULL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_STD_CUS_FULL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_STD_CUS_FULL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_PFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_PFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_FIR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_FIR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_MID",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_MID",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_LST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_LST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NAM_DMS_CUS_SFX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NAM_DMS_CUS_SFX",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_LN_1",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_LN_1",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_LN_2",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_LN_2",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_CITY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_CITY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_ST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_ST",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_ZIP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_ZIP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_CUS_HOM_PHN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_CUS_HOM_PHN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_CUS_WRK_PHN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_CUS_WRK_PHN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ADR_DMS_CUS_EML",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ADR_DMS_CUS_EML",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_CUS_TYP_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_CUS_TYP_INV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_MBUSA_CUS_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_MBUSA_CUS_INV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_CREA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_CREA",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_CREA_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_CREA_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_LAST_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_LAST_UPDT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_LAST_UPDT_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_LAST_UPDT_USER",
+									"type": "String"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_DMS_INV_HDR_STG",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DD_DMS_INV_HDR_STG",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

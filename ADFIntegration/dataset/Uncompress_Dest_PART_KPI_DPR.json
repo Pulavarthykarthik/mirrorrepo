@@ -1,0 +1,24 @@
+{
+	"name": "Uncompress_Dest_PART_KPI_DPR",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Partner-KPI"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('raw/edw/',formatDateTime(utcNow(),'yyyy-MM-dd'))}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-partner-kpi"
+			}
+		}
+	}
+}

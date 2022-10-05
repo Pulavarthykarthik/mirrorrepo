@@ -1,0 +1,152 @@
+{
+	"name": "DS_DMS_INV_HDR_STG",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_PROD_MRA_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "MRA_HIST"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "DMS_INV_HDR_STG-2019-12-04.txt",
+				"folderPath": "MRA/prod/DMS_INV_HDR_STG/2019-12-04"
+			},
+			"columnDelimiter": "\u0001",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ID_DLR",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_INV",
+				"type": "String"
+			},
+			{
+				"name": "DTE_INV_CLOS_ORGNL",
+				"type": "String"
+			},
+			{
+				"name": "CDE_REC_TYP_STG",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_CUS",
+				"type": "String"
+			},
+			{
+				"name": "DTE_INV_CLOS_UPD",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_ORGNL_INV",
+				"type": "String"
+			},
+			{
+				"name": "AMT_TOT_CST_INV",
+				"type": "String"
+			},
+			{
+				"name": "AMT_TOT_PRC_INV",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_SLS_TAX",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_FULL",
+				"type": "String"
+			},
+			{
+				"name": "NAM_STD_CUS_FULL",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_PFX",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_FIR",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_MID",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_LST",
+				"type": "String"
+			},
+			{
+				"name": "NAM_DMS_CUS_SFX",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_LN_1",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_LN_2",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_CITY",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_ST",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_ZIP",
+				"type": "String"
+			},
+			{
+				"name": "NUM_CUS_HOM_PHN",
+				"type": "String"
+			},
+			{
+				"name": "NUM_CUS_WRK_PHN",
+				"type": "String"
+			},
+			{
+				"name": "ADR_DMS_CUS_EML",
+				"type": "String"
+			},
+			{
+				"name": "CDE_CUS_TYP_INV",
+				"type": "String"
+			},
+			{
+				"name": "CDE_MBUSA_CUS_INV",
+				"type": "String"
+			},
+			{
+				"name": "DTS_CREA",
+				"type": "String"
+			},
+			{
+				"name": "ID_CREA_USER",
+				"type": "String"
+			},
+			{
+				"name": "DTS_LAST_UPDT",
+				"type": "String"
+			},
+			{
+				"name": "ID_LAST_UPDT_USER",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

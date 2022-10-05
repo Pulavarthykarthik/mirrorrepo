@@ -1,0 +1,28 @@
+{
+	"name": "Uncompress_MBOD",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Remarketing"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('vehicle-mbod/prod/data', '/year=',formatDateTime(addDays(utcNow(), -1),'yyyy'), '/month=',formatDateTime(addDays(utcNow(), -1),'MM'),'/day=',formatDateTime(addDays(utcNow(), -1),'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

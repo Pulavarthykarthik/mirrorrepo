@@ -1,0 +1,454 @@
+{
+	"name": "PDW_incremental_parent_pl",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lkp_Batches",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Unzip_PDW",
+						"dependencyConditions": [
+							"Succeeded",
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "pdw_batch_details",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachBatch",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lkp_Batches",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lkp_Batches').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "PDW_daily_inc_child_execute_batch",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PDW_incremental_child_execute_batch",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"batch_name": {
+										"value": "@item().batch_name",
+										"type": "Expression"
+									},
+									"execution_order": {
+										"value": "@item().execution_order",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Unzip_Paragon",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "domain_paragon",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "paragon_reservoir_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container_name": "adls-pdw-edw",
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Unzip_PDW",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Unzip_Paragon",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 60,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "PDW_daily_fetch",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "PDW_daily_dump",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							},
+							"container_name": {
+								"value": "adls-pdw-edw",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "sp_update_tbl_status_paragon_load",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Unzip_Paragon",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_PDW_EDW].[sp_PDW_FAILED_TABLES_STATUS]",
+					"storedProcedureParameters": {
+						"ADW_SCHEMA": {
+							"value": {
+								"value": "ADW_PDW_EDW",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ADW_TABLE": {
+							"value": {
+								"value": "paragon",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "Paragon Unzip failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "na",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fail_pl_paragon_issue",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "sp_update_tbl_status_paragon_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "issue with paragon pull",
+						"type": "Expression"
+					},
+					"errorCode": {
+						"value": "XXX",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "sp_update_tbl_status_pdw_load",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Unzip_PDW",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_PDW_EDW].[sp_PDW_FAILED_TABLES_STATUS]",
+					"storedProcedureParameters": {
+						"ADW_SCHEMA": {
+							"value": {
+								"value": "ADW_PDW_EDW",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"ADW_TABLE": {
+							"value": {
+								"value": "pdw",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@pipeline().parameters.run_date",
+								"type": "Expression"
+							},
+							"type": "DateTime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "DateTime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "PDW Unzip failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PARENT_PIPELINE": {
+							"value": {
+								"value": "na",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"parameters": {
+			"run_date": {
+				"type": "string",
+				"defaultValue": "0001-01-01"
+			}
+		},
+		"folder": {
+			"name": "PDW/Daily incremental"
+		},
+		"annotations": []
+	}
+}

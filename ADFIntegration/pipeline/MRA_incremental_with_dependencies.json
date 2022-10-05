@@ -1,0 +1,84 @@
+{
+	"name": "MRA_incremental_with_dependencies",
+	"properties": {
+		"activities": [
+			{
+				"name": "Lkp_module_configs",
+				"description": "Look up configs of modules. A Module could be individual table without dependency or logical group of tables with inter-dependency",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": false,
+							"wildcardFileName": "*.json",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ADW_DMS_Modules_configs",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach_Module",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Lkp_module_configs",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Lkp_module_configs').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "MRA_child_incremental_with_dependencies",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "MRA_child_incremental_with_dependencies",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"module_name": {
+										"value": "@item().module_name",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "MRA"
+		},
+		"annotations": []
+	}
+}

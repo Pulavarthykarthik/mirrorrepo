@@ -1,0 +1,1175 @@
+{
+	"name": "VISTA_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "VISTA/VISTA_PROCESSED/2020-06-24/VEH_VEHI",
+							"wildcardFileName": "*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": "TRUNCATE TABLE ADW_VISTA1.VEH_VEHI",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"enableSkipIncompatibleRow": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "NUM_PORD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_PORD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_USA_VIN_1_10",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_USA_VIN_1_10",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PLANT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PLANT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_SER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_SER",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_USED_CAR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_USED_CAR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_RGN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_RGN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_MODL_YR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_MODL_YR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DES_MODL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DES_MODL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_MODL_CLS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_MODL_CLS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_NATL_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_NATL_TYPE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_VEH_STAT_CATG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_VEH_STAT_CATG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_VPC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_VPC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_IVTY_AGE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_IVTY_AGE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_HIDE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_HIDE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PHY_LOC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PHY_LOC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_VEH_STAT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_VEH_STAT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_STAT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_STAT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_UPHOL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_UPHOL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PAINT_LOW",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PAINT_LOW",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PAINT_UPP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PAINT_UPP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DLR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DLR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_MKT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_MKT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_DECD_SCHD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_DECD_SCHD",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DECD_PERD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DECD_PERD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_ALLOC_PERD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_ALLOC_PERD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_ENGINE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_ENGINE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_BUYBK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_BUYBK",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_BUYBK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_BUYBK",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_REQD_EURO_DLVY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_REQD_EURO_DLVY",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_SCHD_EX_FCTRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_SCHD_EX_FCTRY",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_PRODN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_PRODN",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_ACTL_PRODN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_ACTL_PRODN",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PRT_INV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PRT_INV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DIVRT_TO_PORD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DIVRT_TO_PORD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DIVRT_PORD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DIVRT_PORD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DLR_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DLR_UPDT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_MKT_ADJ_PERD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_MKT_ADJ_PERD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_WRNTY_PGM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_WRNTY_PGM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_MODL_YR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_MODL_YR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PRC_CHG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PRC_CHG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DESIGNO",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DESIGNO",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_DLR_STK",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_DLR_STK",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_AVLBL_FOR_TRD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_AVLBL_FOR_TRD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_TLMTC_VEND_STS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_TLMTC_VEND_STS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_TLMTC_CONTR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_TLMTC_CONTR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_TLMTC_ELIG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_TLMTC_ELIG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_HOT_CAR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_HOT_CAR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_HOT_CAR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_HOT_CAR",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_SLS_PGM_CTRL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_SLS_PGM_CTRL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_WRNTY_START",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_WRNTY_START",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_WRNTY_END",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_WRNTY_END",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_WRNTY_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_WRNTY_TYPE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_ASSIGN_PORT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_ASSIGN_PORT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_ASSIGN_VPC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_ASSIGN_VPC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PICKUP_DLR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PICKUP_DLR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PFD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PFD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_MNRY_LBL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_MNRY_LBL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DLR_ADD_ACSRY",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DLR_ADD_ACSRY",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DSCLSR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DSCLSR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_LUX_TAX_PD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_LUX_TAX_PD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_LUX_TAX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_LUX_TAX",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_USE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_USE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_USE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_USE",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_FCTRY_PRODN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_FCTRY_PRODN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_FLRMAT_EXTRT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_FLRMAT_EXTRT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_REGIS_RSTRCTN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_REGIS_RSTRCTN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_DLR_ORD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_DLR_ORD",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_ORD_TYPE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_ORD_TYPE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_GO_SPEC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_GO_SPEC",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_DMG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_DMG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_GROSS_SHPG_WT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_GROSS_SHPG_WT",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_GAS_GZLR_TAX",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_GAS_GZLR_TAX",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_FRGHT_COST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_FRGHT_COST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_LAND_COST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_LAND_COST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "AMT_MRNE_INS_COST",
+									"type": "String"
+								},
+								"sink": {
+									"name": "AMT_MRNE_INS_COST",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_ASSIGN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_ASSIGN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_ASG_STAT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_ASG_STAT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_SUBSQ_ALLOC",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_SUBSQ_ALLOC",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_ORD_VER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_ORD_VER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_ALT_TRNSPN_PGM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_ALT_TRNSPN_PGM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_BUYBK_MIL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_BUYBK_MIL",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_PROV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_PROV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_SOLD_CAR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_SOLD_CAR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_HOLD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_HOLD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_UPDT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "TME_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "TME_UPDT",
+									"type": "TimeSpan"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_UPDT_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_UPDT_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_PROV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_PROV",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DLR_PROV",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DLR_PROV",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_VPC_TRNF_ON_RT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_VPC_TRNF_ON_RT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_PLN_DECD_PERD",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_PLN_DECD_PERD",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_USED_VALID_BYP",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_USED_VALID_BYP",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_BUYBK_PEND",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_BUYBK_PEND",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_REPL_DLR_INVT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_REPL_DLR_INVT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_INVALID_CONFIG",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_INVALID_CONFIG",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_ECS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_ECS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_SPARTE",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_SPARTE",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_BAUM",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_BAUM",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_STEERING",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_STEERING",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_TRNS",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_TRNS",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_IX_VEHI_LOCR",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_IX_VEHI_LOCR",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "IND_IX_VEHI_VIN",
+									"type": "String"
+								},
+								"sink": {
+									"name": "IND_IX_VEHI_VIN",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CDE_TRVL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CDE_TRVL",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTE_ARVL",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTE_ARVL",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "NUM_SHPMT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "NUM_SHPMT",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_RCD_EFF",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_RCD_EFF",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_CREA",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_CREA",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DW_CREA_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DW_CREA_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_UPDT",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_UPDT",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "ID_DW_UPDT_USER",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ID_DW_UPDT_USER",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "DTS_DW_RCD_END",
+									"type": "String"
+								},
+								"sink": {
+									"name": "DTS_DW_RCD_END",
+									"type": "DateTime"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_VISTA",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DE_VISTA_copy1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "VISTA"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:36Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

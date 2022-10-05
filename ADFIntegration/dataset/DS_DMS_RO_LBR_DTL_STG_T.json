@@ -1,0 +1,156 @@
+{
+	"name": "DS_DMS_RO_LBR_DTL_STG_T",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_MS_PROD_MRA_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "cddb"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureDataLakeStoreLocation",
+				"fileName": "DMS_RO_LBR_DTL_STG-2019-12-04.txt",
+				"folderPath": "MRA/prod/DMS_RO_LBR_DTL_STG/2019-12-04"
+			},
+			"columnDelimiter": "|",
+			"escapeChar": "",
+			"firstRowAsHeader": true,
+			"quoteChar": ""
+		},
+		"schema": [
+			{
+				"name": "DMS_RO_LBR_DTL_STG.txt\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u00000000664\u00000040166\u00000040166\u0000�\u0000\u0000\u0000\u0000\u0000\u0000\u0010D4F-13571665321\u0000013466\u0000 0\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000ustar  \u0000dsadm\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000dstage\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000ID_DLR",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_RO",
+				"type": "String"
+			},
+			{
+				"name": "DTE_RO_CLOS_ORGNL",
+				"type": "String"
+			},
+			{
+				"name": "NUM_DMS_LIN_ITM_RO",
+				"type": "String"
+			},
+			{
+				"name": "CDE_REC_TYP_STG",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_LBR_RO",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_PT_RO",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_MSC_RO",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_RO_LBR_TOT",
+				"type": "String"
+			},
+			{
+				"name": "CDE_DMS_TYP_RO",
+				"type": "String"
+			},
+			{
+				"name": "CDE_DMS_RO_PAY_TYP",
+				"type": "String"
+			},
+			{
+				"name": "CDE_VND_RO_PAY_TYP",
+				"type": "String"
+			},
+			{
+				"name": "CDE_RO_OPER",
+				"type": "String"
+			},
+			{
+				"name": "CDE_RO_STD_OPER",
+				"type": "String"
+			},
+			{
+				"name": "ID_DMS_TECH_RO",
+				"type": "String"
+			},
+			{
+				"name": "QTY_DMS_LBR_HR_ACTL",
+				"type": "String"
+			},
+			{
+				"name": "QTY_DMS_LBR_HR_BILL",
+				"type": "String"
+			},
+			{
+				"name": "PCT_DMS_BILL_RATE",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_LBR_CST",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_MSC_CST",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_TOT_CST",
+				"type": "String"
+			},
+			{
+				"name": "AMT_DMS_TOT_PRC",
+				"type": "String"
+			},
+			{
+				"name": "TXT_DMS_CUS_COM",
+				"type": "String"
+			},
+			{
+				"name": "TXT_DMS_TECH_COM",
+				"type": "String"
+			},
+			{
+				"name": "TXT_RO_OPER",
+				"type": "String"
+			},
+			{
+				"name": "DTS_CREA",
+				"type": "String"
+			},
+			{
+				"name": "ID_CREA_USER",
+				"type": "String"
+			},
+			{
+				"name": "DTS_LAST_UPDT",
+				"type": "String"
+			},
+			{
+				"name": "ID_LAST_UPDT_USER",
+				"type": "String"
+			},
+			{
+				"name": "CDE_DMS_EXP_SRV_TYP",
+				"type": "String"
+			},
+			{
+				"name": "IND_EXP_SRV_CP",
+				"type": "String"
+			},
+			{
+				"name": "IND_EXP_SRV_WRNTY",
+				"type": "String"
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

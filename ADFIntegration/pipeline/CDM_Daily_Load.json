@@ -1,0 +1,637 @@
+{
+	"name": "CDM_Daily_Load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Loading data to Azure synapse",
+				"description": "Loading data from ADLS to Azure Synapse",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Create_Staging_Tables",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.Files1",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "VDW Copy Data",
+							"description": "Loading data from ADLS to ADW ",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Data Transformation And Cleansing",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@{concat('cdm/processed/',formatDateTime(adddays(if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date),-1),'yyyy-MM-dd'),'/',item())}",
+											"type": "Expression"
+										},
+										"wildcardFileName": "*.csv",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "SqlDWSink",
+									"preCopyScript": {
+										"value": "@{concat('TRUNCATE table ',if(contains(createArray('COMPASS_CASE','CONTRACT_DIM','CPD_CUSTOMERS','CUST_VEH_DIM','CUSTOMER_DIM','DLR_MASTER',\n'DMS_AFTER_SALES','DMS_SALES','MBFS','MBUSA_VEHICLE_MASTER','MEDALLIA','MEDALLIA_RSP','MMC_SERVICES',\n'RECALL_CUSTOMERS','SERVICE_CONTRACTS','SIEBEL','UNKNOWN_CUSTOMERS','UPFITTER','VERIZON','VERIZON_SUB','VISTA','VISTA_RTC'),item()),'ADW_Customer_CDM_STG','ADW_Customer_CDM'),'.',item())}",
+										"type": "Expression"
+									},
+									"disableMetricsCollection": false
+								},
+								"enableStaging": false,
+								"enableSkipIncompatibleRow": false
+							},
+							"inputs": [
+								{
+									"referenceName": "CDM_Processed",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "VISTA_Tables",
+									"type": "DatasetReference",
+									"parameters": {
+										"DWTableName": {
+											"value": "@item()",
+											"type": "Expression"
+										},
+										"DWSchema": {
+											"value": "@if(contains(createArray('COMPASS_CASE','CONTRACT_DIM','CPD_CUSTOMERS','CUST_VEH_DIM','CUSTOMER_DIM','DLR_MASTER',\n'DMS_AFTER_SALES','DMS_SALES','MBFS','MBUSA_VEHICLE_MASTER','MEDALLIA','MEDALLIA_RSP','MMC_SERVICES',\n'RECALL_CUSTOMERS','SERVICE_CONTRACTS','SIEBEL','UNKNOWN_CUSTOMERS','UPFITTER','VERIZON','VERIZON_SUB','VISTA','VISTA_RTC'),item()),'ADW_Customer_CDM_STG','ADW_Customer_CDM')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Data Transformation And Cleansing",
+							"description": "Performing DE activities",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/CDM/incre_load/main",
+								"baseParameters": {
+									"file_name": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"incre_date": {
+										"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),formatDateTime(adddays(utcnow(),-1),'yyyyMMdd'),formatDateTime(adddays(pipeline().parameters.run_date,-1),'yyyyMMdd'))",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Create_Staging_Tables",
+				"description": "Creating staging tables for incremental load",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Extract Zip Files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_Customer_CDM_STG].[CREATE_CDM_STG_TBL_PROC]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Incremental_Insert_Update",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Loading data to Azure synapse",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_Customer_CDM_STG].[ADW_CDM_MERGE_PROC]"
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Extract Zip Files",
+				"description": "Fetching the daily data zip file from Daimler ADLS and extract it over reservoir ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "DAPS+MS+CDM+*",
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "cdm_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "cdm_gen2_dest",
+						"type": "DatasetReference",
+						"parameters": {
+							"run_date": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "PII_masking",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Loading data to Azure synapse",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.mask_table",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Generate_json",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/CDM/Masking/generate_json",
+								"baseParameters": {
+									"Table": {
+										"value": "@item()",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Masking_Processed",
+							"type": "DatabricksSparkJar",
+							"dependsOn": [
+								{
+									"activity": "Generate_json",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"mainClassName": "com.daimler.nbx.pseudo.wrapper.scala.Main",
+								"parameters": [
+									"@concat('/dbfs/mnt/adls-customer-cdm/cdm/masking/json/',item(),'.json')"
+								],
+								"libraries": [
+									{
+										"jar": "dbfs:/FileStore/DAPS/jars/nbx-pseudo-spark-databricks-runtime-7.jar"
+									}
+								]
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Delete_Unmasked_Data",
+							"type": "DatabricksNotebook",
+							"dependsOn": [
+								{
+									"activity": "Masking_Processed",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/CDM/Masking/Delete_process_raw",
+								"baseParameters": {
+									"Table": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"run_date": {
+										"value": "@formatDateTime(adddays(if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date),-1),'yyyy-MM-dd')",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "DQF",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Loading data to Azure synapse",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@if(equals(pipeline().DataFactory,'xto-MS-edwdev-us-rsv-factory'),pipeline().parameters.dqf_tables,take(array(''),0))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "DQF Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/DQF_RUN_CDM",
+								"baseParameters": {
+									"Date": {
+										"value": "@formatDateTime(adddays(if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date),-1),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"Path": {
+										"value": "/mnt/adls-customer-cdm/cdm/processed",
+										"type": "Expression"
+									},
+									"environment": {
+										"value": "MVP",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "CDM",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "DQF_Masked_Tables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Loading data to Azure synapse",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@if(equals(pipeline().DataFactory,'xto-MS-edwdev-us-rsv-factory'),pipeline().parameters.mask_table,take(array(''),0))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "DQF_noteboook_masked",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/DQF_RUN_CDM",
+								"baseParameters": {
+									"Date": {
+										"value": "@formatDateTime(adddays(if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date),-1),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"Path": {
+										"value": "/mnt/adls-customer-cdm/cdm/masked_processed",
+										"type": "Expression"
+									},
+									"environment": {
+										"value": "MVP",
+										"type": "Expression"
+									},
+									"schema_name": {
+										"value": "CDM",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "sp_source_file_failed_status",
+				"type": "SqlServerStoredProcedure",
+				"dependsOn": [
+					{
+						"activity": "Extract Zip Files",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"storedProcedureName": "[ADW_CTRL].[sp_SOURCE_FILE_FAILED_STATUS]",
+					"storedProcedureParameters": {
+						"DATA_EXECUTED_FOR_DT": {
+							"value": {
+								"value": "@if(equals(pipeline().parameters.run_date,'0001-01-01'),utcnow('yyyy-MM-dd'),pipeline().parameters.run_date)",
+								"type": "Expression"
+							},
+							"type": "Datetime"
+						},
+						"DW_UPDT_BY": {
+							"value": null,
+							"type": "String"
+						},
+						"DW_UPDT_DT": {
+							"value": null,
+							"type": "Datetime"
+						},
+						"EXCEPTIONS": {
+							"value": {
+								"value": "Unzip Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"EXECUTION_STATUS": {
+							"value": {
+								"value": "Failed",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_NAME": {
+							"value": {
+								"value": "@pipeline().Pipeline",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"PIPELINE_RUN_ID": {
+							"value": {
+								"value": "@pipeline().RunId",
+								"type": "Expression"
+							},
+							"type": "String"
+						},
+						"REMARK": {
+							"value": null,
+							"type": "String"
+						}
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDW2",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Fail_pl",
+				"type": "Fail",
+				"dependsOn": [
+					{
+						"activity": "sp_source_file_failed_status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"message": {
+						"value": "@concat(pipeline().Pipeline,' source file is missing.')",
+						"type": "Expression"
+					},
+					"errorCode": {
+						"value": "XXX",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Files1": {
+				"type": "array",
+				"defaultValue": [
+					"CUST_VEH_DIM",
+					"CUSTOMER_DIM",
+					"MBFS",
+					"MBUSA_VEHICLE_MASTER",
+					"EXTENDED_CUSTOMER_ADDRESS_DETAIL",
+					"EXTENDED_CUSTOMER_SEGMENT",
+					"EXTENDED_CUSTOMER_SUMMARY",
+					"EXTENDED_VEHICLE_CUSTOMER_DETAIL",
+					"EXTENDED_VEHICLE_CUSTOMER_SUMMARY"
+				]
+			},
+			"mask_table": {
+				"type": "array",
+				"defaultValue": [
+					"CUSTOMER_DIM",
+					"EXTENDED_CUSTOMER_ADDRESS_DETAIL",
+					"MBFS"
+				]
+			},
+			"dqf_tables": {
+				"type": "array",
+				"defaultValue": [
+					"CUST_VEH_DIM",
+					"EXTENDED_CUSTOMER_SEGMENT",
+					"EXTENDED_CUSTOMER_SUMMARY",
+					"EXTENDED_VEHICLE_CUSTOMER_DETAIL",
+					"EXTENDED_VEHICLE_CUSTOMER_SUMMARY",
+					"MBUSA_VEHICLE_MASTER"
+				]
+			},
+			"run_date": {
+				"type": "string",
+				"defaultValue": "0001-01-01"
+			}
+		},
+		"folder": {
+			"name": "CDM"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-07-06T16:19:37Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

@@ -1,0 +1,13 @@
+{
+	"name": "coe-us-ir-azu-xbs-linked",
+	"properties": {
+		"type": "SelfHosted",
+		"description": "IR linked to coe-us-ir-azu-xbs of data factory xto-coe-us-factory in resource group coe-us-batchingest",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/3e959272-bef3-49e1-a2a6-58ee4a3dd124/resourceGroups/coe-us-batchingest/providers/Microsoft.DataFactory/factories/xto-coe-us-factory/integrationruntimes/coe-us-ir-azu-xbs",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}

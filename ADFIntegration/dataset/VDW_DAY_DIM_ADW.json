@@ -1,0 +1,204 @@
+{
+	"name": "VDW_DAY_DIM_ADW",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSqlDW2",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "VDW"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "ID_DAY",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DTE_CAL",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DES_DAY",
+				"type": "char"
+			},
+			{
+				"name": "DTE_CAL_WK_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_WK_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_MTH_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_MTH_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_RETL_MTH_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_RETL_MTH_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_YR_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_YR_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_RETL_YR_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_RETL_YR_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "NUM_DY_CAL_MTH",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "NUM_DY_RETL_MTH",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "NAM_CAL_MTH",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CAL_MTH",
+				"type": "char"
+			},
+			{
+				"name": "NUM_CAL_YR",
+				"type": "char"
+			},
+			{
+				"name": "NAM_RETL_MTH",
+				"type": "char"
+			},
+			{
+				"name": "NUM_RETL_MTH",
+				"type": "char"
+			},
+			{
+				"name": "NUM_RETL_YR",
+				"type": "char"
+			},
+			{
+				"name": "NUM_JULN_DY",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IND_MBUSA_HO_HLDY",
+				"type": "char"
+			},
+			{
+				"name": "IND_USA_BNK_HLDY",
+				"type": "char"
+			},
+			{
+				"name": "IND_WKDY",
+				"type": "char"
+			},
+			{
+				"name": "NAM_DY_OF_WK",
+				"type": "char"
+			},
+			{
+				"name": "NUM_HO_CMTH_WRKDY",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "IND_PDC_HLDY",
+				"type": "char"
+			},
+			{
+				"name": "IND_PDC_PRTL_CREW",
+				"type": "char"
+			},
+			{
+				"name": "QTY_HO_CMTH_WRKDY",
+				"type": "smallint",
+				"precision": 5
+			},
+			{
+				"name": "NUM_CAL_QTR",
+				"type": "char"
+			},
+			{
+				"name": "DTE_CAL_QTR_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_CAL_QTR_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "NUM_RETL_QTR",
+				"type": "char"
+			},
+			{
+				"name": "DTE_RETL_QTR_BEG",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTE_RETL_QTR_END",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "DTS_DW_CREA",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_CREA_USER",
+				"type": "char"
+			},
+			{
+				"name": "DTS_DW_UPDT",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "ID_DW_UPDT_USER",
+				"type": "char"
+			}
+		],
+		"typeProperties": {
+			"schema": "ADW_Enterprise_Dimensions",
+			"table": "DAY_DIM"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

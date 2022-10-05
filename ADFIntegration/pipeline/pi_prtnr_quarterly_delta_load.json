@@ -1,0 +1,366 @@
+{
+	"name": "pi_prtnr_quarterly_delta_load",
+	"properties": {
+		"activities": [
+			{
+				"name": "Read Quartely Delta Load JSON File",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "adls-partner-kpi/StaggingFiles",
+								"type": "Expression"
+							},
+							"wildcardFileName": "ADW_PRTNR_QUARTERLY_DELTA_LOAD.j*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "adw_prtnr_json",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For Each JSON Object Process the Delta Load",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Read Quartely Delta Load JSON File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Read Quartely Delta Load JSON File').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": {
+									"value": "@item().notebook_path",
+									"type": "Expression"
+								},
+								"baseParameters": {
+									"run_date": {
+										"value": "@item().rundate",
+										"type": "Expression"
+									},
+									"file_name": {
+										"value": "@item().filename",
+										"type": "Expression"
+									},
+									"dpr_type": {
+										"value": "@item().type",
+										"type": "Expression"
+									},
+									"run_month": {
+										"value": "@item().runmonths",
+										"type": "Expression"
+									},
+									"run_day": {
+										"value": "@item().runday",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						},
+						{
+							"name": "Get Metadata",
+							"type": "GetMetadata",
+							"dependsOn": [
+								{
+									"activity": "Execute Notebook",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "DS_PROCESSED_PARQUET",
+									"type": "DatasetReference",
+									"parameters": {
+										"container_name": {
+											"value": "@concat('adls-partner-kpi/processed/',item().table,'/year=',utcnow('yyyy'),'/month=',utcnow('MM'),'/day=',utcnow('dd'))",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Get Metadata",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@equals(activity('Get Metadata').output.exists,true)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "Create Stagging Table",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": {
+												"value": "@concat(item().stageschema,'.',item().stageproc)",
+												"type": "Expression"
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDW2",
+											"type": "LinkedServiceReference"
+										}
+									},
+									{
+										"name": "Load Data to Stagging Table",
+										"type": "Copy",
+										"dependsOn": [
+											{
+												"activity": "Create Stagging Table",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "ParquetSource",
+												"storeSettings": {
+													"type": "AzureBlobFSReadSettings",
+													"recursive": true,
+													"wildcardFolderPath": {
+														"value": "@concat('/processed/',item().table,'/year=',utcnow('yyyy'),'/month=',utcnow('MM'),'/day=',utcnow('dd'))",
+														"type": "Expression"
+													},
+													"wildcardFileName": "*.parquet",
+													"enablePartitionDiscovery": false
+												}
+											},
+											"sink": {
+												"type": "SqlDWSink",
+												"writeBehavior": "Insert",
+												"sqlWriterUseTableLock": false
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "DS_PROCESSED_PARQUET",
+												"type": "DatasetReference",
+												"parameters": {
+													"container_name": "@item().container"
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "DS_ADW_TABLES_ADF",
+												"type": "DatasetReference",
+												"parameters": {
+													"SchemaName": {
+														"value": "@item().stageschema",
+														"type": "Expression"
+													},
+													"TableName": {
+														"value": "@item().table",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Process Delta Data and Load into Main Table",
+										"type": "SqlServerStoredProcedure",
+										"dependsOn": [
+											{
+												"activity": "Load Data to Stagging Table",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "7.00:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"storedProcedureName": {
+												"value": "@concat(item().stageschema,'.',item().mainproc)",
+												"type": "Expression"
+											}
+										},
+										"linkedServiceName": {
+											"referenceName": "AzureSqlDW2",
+											"type": "LinkedServiceReference"
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "For Each Table Run DQF",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "For Each JSON Object Process the Delta Load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.Table_Name",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "DQF Notebook",
+							"type": "DatabricksNotebook",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "7.00:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"notebookPath": "/DataEngineering/DATAQUALITY/02_IMPLEMENTATION/DQF_RUN",
+								"baseParameters": {
+									"Date": {
+										"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+										"type": "Expression"
+									},
+									"table_name": {
+										"value": "@item()",
+										"type": "Expression"
+									},
+									"schema_name": "DEALER_PARTNER_KPI",
+									"Path": {
+										"value": "/mnt/adls-partner-kpi/processed",
+										"type": "Expression"
+									}
+								}
+							},
+							"linkedServiceName": {
+								"referenceName": "MBUSA_DEV",
+								"type": "LinkedServiceReference"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Table_Name": {
+				"type": "array",
+				"defaultValue": [
+					"PRTNR_MGMT_DPR_METR"
+				]
+			}
+		},
+		"folder": {
+			"name": "PARTNER_KPI"
+		},
+		"annotations": []
+	}
+}

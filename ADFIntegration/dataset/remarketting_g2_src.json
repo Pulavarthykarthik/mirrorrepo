@@ -1,0 +1,32 @@
+{
+	"name": "remarketting_g2_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Gen2_Domain_ADLS",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"run_date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Remarketing"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileSystem": {
+					"value": "@{concat('mbfs-amsdw/prod/data', '/year=',formatDateTime(dataset().run_date,'yyyy'), '/month=',formatDateTime(dataset().run_date,'MM'),'/day=',formatDateTime(dataset().run_date,'dd'),'/')}",
+					"type": "Expression"
+				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	}
+}

@@ -1,0 +1,29 @@
+{
+	"name": "Warranty_incre_destination_pi_framework",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"date": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "WARRANTY|REMARKETTING"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@{concat('raw/wrnty-opr/',formatDateTime(dataset().date,'yyyy-MM-dd'),'/')}",
+					"type": "Expression"
+				},
+				"fileSystem": "adls-wrnty-edw"
+			}
+		}
+	}
+}
