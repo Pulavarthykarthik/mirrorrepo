@@ -76,6 +76,11 @@ stages:
       dataFactoryName: $(uat_datafactoryname)
   
     jobs:
+      - job: develop
+        displayname: develop
+        pool:
+          vmImage: 'windows-latest'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
       - deployment: DeploytoUAT
         pool:
           vmImage: 'windows-latest'
@@ -144,6 +149,88 @@ stages:
                     ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rguatname) -DataFactoryName $(uat_datafactoryname) -predeployment $false -deleteDeployment $true
                     azurePowerShellVersion: 'LatestVersion'
 
+#release pipeline for prod
+
+  - stage: 'PROD'
+    displayName: 'PROD deploy'
+    dependsOn: build_adf
+    variables:
+      dataFactoryName: $(prod_datafactoryname)
+  
+    jobs:
+      - job: prod
+        displayname: develop
+        pool:
+          vmImage: 'windows-latest'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+
+      - deployment: DeploytoPROD
+        pool:
+          vmImage: 'windows-latest'
+        environment: PROD
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadPipelineArtifact@2
+                  inputs:
+                    source: current
+                    artifactName: 'datafactory'
+                    targetPath: '$(Pipeline.Workspace)'
+                  displayName: Downloading Artifact
+        #to know folder structure
+                - powershell: |
+                    tree "$(Pipeline.Workspace)" /F
+                    Get-Content -Path $(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1
+                  displayName: 'Treeview of Pipeline.Workspace'
+
+                - task: DownloadSecureFile@1
+                  name: adfparameter
+                  displayName: 'Download Parameters from secure files'
+                  inputs:
+                    secureFile: ARMTemplateParametersForFactoryprod.json
+                - pwsh: |
+                    Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
+                    Remove-Item ARMTemplateParametersForFactory.json
+                    Rename-Item -Path ARMTemplateParametersForFactoryprod.json -NewName ARMTemplateParametersForFactory.json
+                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                  displayName: Replace ARM Template Parameters
+                - pwsh: |
+                    (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
+                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                  displayName: Replace Managed Identity to System Assigned
+        #stop Trigger
+                - task: AzurePowerShell@5
+                  displayName: Stop Trigger
+                  inputs: 
+                    azureSubscription: $(myserviceconnection)
+                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rgprodname) -DataFactoryName $(prod_datafactoryname) -predeployment $true -deleteDeployment $false
+                    azurePowerShellVersion: 'LatestVersion'
+
+                - task: AzureResourceManagerTemplateDeployment@3
+                  displayName: 'Deploying to PROD RG task'
+                  inputs:
+                    deploymentScope: Resource Group
+                    azureResourceManagerConnection: $(myserviceconnection)
+                    subscriptionId: $(subscriptionid)
+                    action: Create Or Update Resource Group
+                    resourceGroupName: $(rgprodname)
+                    location: $(PRODlocation)
+                    templateLocation: Linked artifact
+                    csmFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json'
+                    csmParametersFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateParametersForFactory.json'
+                    deploymentMode: Incremental
+        #start Trigger
+                - task: AzurePowerShell@5
+                  displayName: Start Trigger
+                  inputs: 
+                    azureSubscription: $(myserviceconnection)
+                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
+                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rgprodname) -DataFactoryName $(prod_datafactoryname) -predeployment $false -deleteDeployment $true
+                    azurePowerShellVersion: 'LatestVersion'
                     
             
             
