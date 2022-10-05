@@ -2,7 +2,7 @@
 	"name": "dev_output",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dev_blob_linked_service",
+			"referenceName": "AzureBlobStorage1",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
@@ -17,5 +17,6 @@
 			"quoteChar": "\""
 		},
 		"schema": []
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
 }

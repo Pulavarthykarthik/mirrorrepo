@@ -1,0 +1,9 @@
+{
+	"name": "daapractadfuat",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "5715bb2a-24b9-4151-b08b-dd7f16ffb468",
+		"tenantId": "a45fe71a-f480-4e42-ad5e-aff33165aa35"
+	}
+}

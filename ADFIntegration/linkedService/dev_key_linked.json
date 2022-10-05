@@ -1,10 +1,11 @@
 {
 	"name": "dev_key_linked",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"annotations": [],
 		"type": "AzureKeyVault",
 		"typeProperties": {
-			"baseUrl": "https://keypractadfdev.vault.azure.net/"
+			"baseUrl": "https://daapractadfuatkey.vault.azure.net/"
 		}
 	}
 }
