@@ -49,13 +49,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "dev_input",
+						"referenceName": "input_data_dev",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "dev_output",
+						"referenceName": "outputdata_dev",
 						"type": "DatasetReference"
 					}
 				]
