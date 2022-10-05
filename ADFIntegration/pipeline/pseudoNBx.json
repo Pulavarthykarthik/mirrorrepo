@@ -1,0 +1,41 @@
+{
+	"name": "pseudoNBx",
+	"properties": {
+		"activities": [
+			{
+				"name": "dataAnon",
+				"type": "DatabricksSparkJar",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"mainClassName": "com.daimler.nbx.pseudo.wrapper.scala.Main",
+					"parameters": [
+						""
+					],
+					"libraries": [
+						{
+							"jar": "dbfs:/FileStore/DAPS/jars/nbx-pseudo-spark-databricks-runtime-7.jar"
+						}
+					]
+				},
+				"linkedServiceName": {
+					"referenceName": "MBUSA_DEV",
+					"type": "LinkedServiceReference"
+				}
+			}
+		],
+		"folder": {
+			"name": "poc"
+		},
+		"annotations": [],
+		"lastPublishTime": "2022-10-05T09:59:19Z"
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

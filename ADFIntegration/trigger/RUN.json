@@ -1,0 +1,18 @@
+{
+	"name": "RUN",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2019-11-14T08:20:00Z",
+				"endTime": "2019-11-15T05:20:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
