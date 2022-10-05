@@ -1,0 +1,11 @@
+{
+	"name": "LS_RSV_mbusa-daps-prod_CoE_KV",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://xtokv-wx7buzhzkocye.vault.azure.net/"
+		}
+	}
+}
