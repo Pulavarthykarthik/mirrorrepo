@@ -87,11 +87,11 @@ stages:
       dataFactoryName: $(uat_datafactoryname)
   
     jobs:
-      #- #job: #develop
-        #displayName: develop
-        #pool:
-          #vmImage: 'windows-latest'
-        #condition: #and(succeeded(), eq(variables[' '], 'refs/heads/develop'))
+      - job: develop
+        displayName: develop
+        pool:
+          vmImage: 'windows-latest'
+        condition: and(succeeded(), eq(variables['Build.SourceBranch '], 'refs/heads/develop'))
       - deployment: DeploytoUAT
         pool:
           vmImage: 'windows-latest'
@@ -173,11 +173,11 @@ stages:
       dataFactoryName: $(prod_datafactoryname)
   
     jobs:
-      #- #job: prod
-        #displayName: prod
-        #pool:
-          #vmImage: 'windows-latest'
-        #condition: #and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+      - job: prod
+        displayName: prod
+        pool:
+          vmImage: 'windows-latest'
+        condition: and(succeeded(), eq(variables['System.PullRequest.SourceBranch'], 'refs/heads/main'))
 
       - deployment: DeploytoPROD
         pool:
