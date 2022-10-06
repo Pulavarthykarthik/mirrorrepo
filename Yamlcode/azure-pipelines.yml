@@ -82,7 +82,7 @@ stages:
   
     jobs:
       - job: develop
-        displayname: develop
+        displayName: develop
         pool:
           vmImage: 'windows-latest'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
@@ -168,7 +168,7 @@ stages:
   
     jobs:
       - job: prod
-        displayname: prod
+        displayName: prod
         pool:
           vmImage: 'windows-latest'
         condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
