@@ -1,0 +1,10 @@
+{
+	"name": "LS_ADLS_AR_V2",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://rsv0edwdev0r21o.dfs.core.windows.net"
+		}
+	}
+}

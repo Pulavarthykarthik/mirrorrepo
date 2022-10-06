@@ -1,0 +1,15 @@
+{
+	"name": "ADLS_LinkedService_v2",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://rsv0mbusadapsprod0y99t.dfs.core.windows.net"
+		},
+		"connectVia": {
+			"referenceName": "coe-us-ir-azu-xbs-linked",
+			"type": "IntegrationRuntimeReference"
+		},
+		"annotations": []
+	}
+}

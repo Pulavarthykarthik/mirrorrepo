@@ -1,0 +1,16 @@
+{
+	"name": "AzureSqlDW2",
+	"properties": {
+		"description": "adw 2",
+		"annotations": [],
+		"type": "AzureSqlDW",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;connection timeout=6000;Data Source=xto-ms-us--sqlsrv-edwdev.database.windows.net;Initial Catalog=xtomsusedwdevsqldwh2"
+		},
+		"connectVia": {
+			"referenceName": "coe-us-ir-azu-xbs-linked",
+			"type": "IntegrationRuntimeReference"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}
