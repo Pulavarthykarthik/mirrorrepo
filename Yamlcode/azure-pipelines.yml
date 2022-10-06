@@ -157,7 +157,7 @@ stages:
 #release pipeline for prod
   - stage: 'approve_deployment'
     displayName: 'Approval to Deploy to PROD'
-    #dependsOn: Build_ADF
+    dependsOn: Build_ADF
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
   - stage: 'PROD'
@@ -167,7 +167,7 @@ stages:
       dataFactoryName: $(prod_datafactoryname)
   
     jobs:
-      - job: prod
+      - deployment: prod #job: prod
         displayName: prod
         pool:
           vmImage: 'windows-latest'
