@@ -3,9 +3,9 @@ trigger:
 - develop
 - UAT
 
-  paths:
-    include:
-      - ADFIntegration
+  #paths:
+    #include:
+     # - ADFIntegration
 
   
 pool:
