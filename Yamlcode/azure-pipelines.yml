@@ -91,7 +91,7 @@ stages:
         displayName: develop
         pool:
           vmImage: 'windows-latest'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch '], 'refs/heads/develop'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
       - deployment: DeploytoUAT
         pool:
           vmImage: 'windows-latest'
@@ -177,7 +177,7 @@ stages:
         displayName: prod
         pool:
           vmImage: 'windows-latest'
-        condition: and(succeeded(), eq(variables['System.PullRequest.SourceBranch'], 'refs/heads/main'))
+        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/pull/1/merge'))
 
       - deployment: DeploytoPROD
         pool:
