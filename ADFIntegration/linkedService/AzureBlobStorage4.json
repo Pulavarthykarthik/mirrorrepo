@@ -1,0 +1,17 @@
+{
+	"name": "AzureBlobStorage4",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "AzureKeyVault4",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "daasecretdev"
+			}
+		}
+	}
+}
