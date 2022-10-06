@@ -72,6 +72,12 @@ stages:
               tree "$(build.artifactstagingdirectory)" /F
             displayName: "Treeview of build.artifactstagingdirectory"
 
+          - task: Bash@3
+            inputs:
+              targetType: 'inline'
+              script: 'env | sort'
+
+
 
 #release pipeline
   - stage: 'UAT'
@@ -85,7 +91,7 @@ stages:
         #displayName: develop
         #pool:
           #vmImage: 'windows-latest'
-        #condition: #and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+        #condition: #and(succeeded(), eq(variables[' '], 'refs/heads/develop'))
       - deployment: DeploytoUAT
         pool:
           vmImage: 'windows-latest'
