@@ -85,13 +85,14 @@ stages:
     dependsOn: Build_ADF
     variables:
       dataFactoryName: $(uat_datafactoryname)
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
   
     jobs:
-      - job: develop
-        displayName: develop
-        pool:
-          vmImage: 'windows-latest'
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+      #- #job: #develop
+        #displayName: develop
+        #pool:
+          #vmImage: 'windows-latest'
+        #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
       - deployment: DeploytoUAT
         pool:
           vmImage: 'windows-latest'
@@ -171,13 +172,14 @@ stages:
     dependsOn: Build_ADF
     variables:
       dataFactoryName: $(prod_datafactoryname)
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
   
     jobs:
-      - job: prod
-        displayName: prod
-        pool:
-          vmImage: 'windows-latest'
-        condition: and(eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')) #and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/pull/1/merge'))
+      #- #job: #prod
+        #displayName: prod
+        #pool:
+          #vmImage: 'windows-latest'
+        #condition: and(eq(variables['System.PullRequest.TargetBranch'], 'refs/heads/main'), eq(variables['Build.Reason'], 'PullRequest')) #and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/pull/1/merge'))
 
       - deployment: DeploytoPROD
         pool:
