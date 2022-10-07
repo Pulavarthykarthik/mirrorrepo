@@ -7,8 +7,9 @@ trigger:
 parameters:
   - name: environments
     type: object
-    default:
-    values: ['qa','prod']
+    values:
+      - qa
+      - prod
       
     
     
