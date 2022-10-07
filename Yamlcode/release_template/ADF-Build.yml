@@ -60,7 +60,8 @@ jobs:
           artifact: 'datafactory'
           publishLocation: 'pipeline'
 
-      - task: Folder values
+      - task: Bash@3
+        displayName: "Host agent folder contents"
         inputs:
           targetType: 'inline'
           script: 'env | sort'
