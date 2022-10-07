@@ -8,9 +8,8 @@ parameters:
   - name: environments
     type: object
     default:
-    values:
-      environment:  qa
-      environment:  prod
+    - "qa"
+    - "prod"
       
     
     
