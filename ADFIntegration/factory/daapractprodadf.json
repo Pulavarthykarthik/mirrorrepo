@@ -1,0 +1,9 @@
+{
+	"name": "daapractprodadf",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "7d45472c-edfe-4fe1-8a53-9d30aca6b9bc",
+		"tenantId": "a45fe71a-f480-4e42-ad5e-aff33165aa35"
+	}
+}
