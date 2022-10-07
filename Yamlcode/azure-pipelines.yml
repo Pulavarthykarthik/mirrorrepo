@@ -8,8 +8,8 @@ parameters:
   - name: environments
     type: object
     default:
-      - qa
-      - prod
+      qa
+      prod
   - name: RunADF
     displayName: Run ADF
     type: boolean
