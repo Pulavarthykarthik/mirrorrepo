@@ -8,8 +8,8 @@ parameters:
   - name: environments
     type: object
     default:
-      - name: 'qa'
-      - name: 'prod'
+      - 'qa'
+      - 'prod'
     
       
   - name: RunADF
