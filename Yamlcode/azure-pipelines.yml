@@ -60,7 +60,7 @@ stages:
             value: $(adfprodname)
 
       jobs:
-        - template: release_template/ADF-release.yml
+        - template: release_template/ADF-Release.yml
           parameters:
             env: ${{ env }}
             azureServiceConnection: ${{ variables['connection'] }}
