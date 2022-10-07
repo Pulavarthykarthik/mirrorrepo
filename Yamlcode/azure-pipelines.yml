@@ -7,9 +7,10 @@ trigger:
 parameters:
   - name: environments
     type: object
-    default:
-      - 'qa'
-      - 'prod'
+    default: Default
+    values:
+    - qa
+    - prod
     
       
   - name: RunADF
