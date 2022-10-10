@@ -20,7 +20,7 @@ parameters:
   - name: environ
     type: object
     default:
-      - uat
+      - uatt
       - pro
         
     
