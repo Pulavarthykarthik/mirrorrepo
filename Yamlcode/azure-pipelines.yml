@@ -6,7 +6,7 @@ trigger:
 
 parameters:
   - name: environment
-    type: string
+    type: object
     default:
       - QA
       - PROD
