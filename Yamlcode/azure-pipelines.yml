@@ -6,11 +6,11 @@ trigger:
 
 parameters:
   - name: environments
-    type: object
+    type: string
     default:
     displayName: 
-    - qa
-    - prod
+      - qa
+      - prod
     
       
     
