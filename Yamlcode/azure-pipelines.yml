@@ -13,20 +13,6 @@ steps:
     displayName: 'Create user ${{ user }}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # trigger:
 #   batch: true
 #   branches:
