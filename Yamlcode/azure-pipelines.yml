@@ -21,9 +21,11 @@ parameters:
     type: object
     default:
     - name: qa
-      azureServiceConnection: ${{ variables['connection'] }}
+      #azureServiceConnection: ${{ variables['connection'] }}
     - name: prod
-      azureServiceConnection: ${{ variables['connection'] }}
+      dependsOn:
+      - qa
+      #azureServiceConnection: ${{ variables['connection'] }}
         
     
       
