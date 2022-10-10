@@ -20,8 +20,8 @@ parameters:
   - name: environ
     type: object
     default:
-      - QA
-      - PROD
+      - uat
+      - pro
         
     
       
