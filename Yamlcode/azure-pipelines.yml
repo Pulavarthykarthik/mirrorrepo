@@ -43,7 +43,7 @@ stages:
         sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
         enabled: ${{ parameters.RunADF }}
   
-  - ${{ each env in parameters.environments }}:
+  - ${{ each env in parameters.environment }}:
     - stage: ${{ env.name }}
       displayName: 'Deploy to ${{ env.name }}'
       variables:
