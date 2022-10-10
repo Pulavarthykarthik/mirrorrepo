@@ -69,7 +69,7 @@ stages:
 
       # To Know folder structure
           - powershell: |
-              tree "$(build.artifactstagingdirectory)" /F
+              tree "$(build.artifactstagingdirectory)"
             displayName: "Treeview of build.artifactstagingdirectory"
 
           - task: Bash@3
