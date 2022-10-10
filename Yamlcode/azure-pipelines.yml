@@ -5,10 +5,9 @@ trigger:
       - develop
 
 parameters:
-  - name: environments
-    type: string
+  - name: environment
+    type: object
     default:
-    displayName: 
       - qa
       - prod
     
