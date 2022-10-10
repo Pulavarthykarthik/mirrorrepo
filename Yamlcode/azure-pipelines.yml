@@ -8,7 +8,7 @@ parameters:
 
 steps:
   - ${{ each user in parameters.users }}:
-    - stage: 'Create user ${{ user }}'
+    - displayName: 'Create user ${{ user }}'
 
 # trigger:
 #   batch: true
