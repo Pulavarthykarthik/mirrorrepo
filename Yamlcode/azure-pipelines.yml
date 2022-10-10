@@ -6,12 +6,9 @@ parameters:
       - jane
       - bob
 
-
-
 steps:
   - ${{ each user in parameters.users }}:
     displayName: 'Create user ${{ user }}
-
 
 # trigger:
 #   batch: true
