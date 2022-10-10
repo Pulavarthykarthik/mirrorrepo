@@ -17,11 +17,11 @@ trigger:
       - develop
 
 parameters:
-  - name: environ
+  - name: environment
     type: object
     default:
-      - uatt
-      - pro
+      - QA
+      - PROD
         
     
       
@@ -53,7 +53,7 @@ stages:
         sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
         enabled: ${{ parameters.RunADF }}
   
-  - ${{ each env in parameters.environ }}:
+  - ${{ each env in parameters.environment }}:
     - stage: ${{ env.name }}
       displayName: 'Deploy to ${{ env.name }}'
       variables:
