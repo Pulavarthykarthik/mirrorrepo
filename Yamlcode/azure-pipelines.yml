@@ -6,10 +6,10 @@ trigger:
 
 parameters:
   - name: environments
-    type: string
+    type: object
     default:
-    - envname: 'qa'
-    - envname: 'prod'
+    - envname: qa
+    - envname: prod
   - name: RunADF
     displayName: Run ADF
     type: boolean
