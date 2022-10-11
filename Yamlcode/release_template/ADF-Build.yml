@@ -1,6 +1,6 @@
 parameters:
   - name: projectPath
-  - name: rootFolder
+  #- name: rootFolder
   - name: sourceFactoryPath
   - name: enabled
     type: boolean

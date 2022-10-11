@@ -28,7 +28,7 @@ stages:
   - stage: CI
     jobs: 
 
-    - template: release_template/ADF-Build.yaml
+    - template: release_template/ADF-Build.yml
       parameters:
         projectPath: ${{ variables.ADFProjectPath }}
         sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
@@ -56,7 +56,7 @@ stages:
             value: $(adfprodname)
 
       jobs:
-        - template: release_template/ADF-release.yaml
+        - template: release_template/ADF-Release.yml
           parameters:
             env: ${{ env }}
             azureServiceConnection: ${{ variables['connection'] }}
