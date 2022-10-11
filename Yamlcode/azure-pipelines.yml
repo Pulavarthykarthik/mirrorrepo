@@ -56,23 +56,23 @@ stages:
      
   - ${{each env in parameters.environments}}:
   - stage: CD_${{env}}
-    displayName: CD${{env}}
+    displayName: CD${{ env }}
     variables:
-      - group: CD${{env}}
+      - group: CD${{ env }}
       - name: connection
-        ${{ if eq(env, 'qa') }}:
+        ${{ if eq(${{ env }}, 'qa') }}:
           value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
-        ${{ if eq(env, 'prod') }}:
+        ${{ if eq(${{ env }}, 'prod') }}:
           value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
       - name: adfresourcegroup
-        ${{ if eq(env, 'qa') }}:
+        ${{ if eq(${{ env }}, 'qa') }}:
           value: $(adfqaResourceGroup)
-        ${{ if eq(env, 'prod') }}:
+        ${{ if eq(${{ env }}, 'prod') }}:
           value: $(adfprodResourceGroup)
       - name: adfName
-        ${{ if eq(env, 'qa') }}:
+        ${{ if eq(${{ env }}, 'qa') }}:
           value: $(adfqaname)
-        ${{ if eq(env, 'prod') }}:
+        ${{ if eq(${{ env }}, 'prod') }}:
           value: $(adfprodname)
 
     jobs:
