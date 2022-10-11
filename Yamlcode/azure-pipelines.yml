@@ -36,29 +36,29 @@ stages:
   
   - ${{ each env in parameters.environments }}:
     - stage:
-      displayName: CD - ${{ env.Value }}
+      displayName: CD - ${{ env.value }}
       variables:
-        - group: ${{ env }}
+        - group: ${{ env.value }}
         - name: connection
-          ${{ if eq(env.Value, 'qa') }}:
+          ${{ if eq(env.value, 'qa') }}:
             value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
-          ${{ if eq(env.Value, 'prod') }}:
+          ${{ if eq(env.value, 'prod') }}:
             value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
         - name: adfresourcegroup
-          ${{ if eq(env.Value, 'qa') }}:
+          ${{ if eq(env.value, 'qa') }}:
             value: $(adfqaResourceGroup)
-          ${{ if eq(env.Value, 'prod') }}:
+          ${{ if eq(env.value, 'prod') }}:
             value: $(adfprodResourceGroup)
         - name: adfName
-          ${{ if eq(env.Value, 'qa') }}:
+          ${{ if eq(env.value, 'qa') }}:
             value: $(adfqaname)
-          ${{ if eq(env.Value, 'prod') }}:
+          ${{ if eq(env.value, 'prod') }}:
             value: $(adfprodname)
 
       jobs:
         - template: release_template/ADF-Release.yml
           parameters:
-            env: ${{ env.Value }}
+            env: ${{ env.value }}
             azureServiceConnection: ${{ variables['connection'] }}
             azureSubscriptionId: $(subscriptionId)
             azureLocation: $(adfLocation)
