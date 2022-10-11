@@ -35,7 +35,7 @@ stages:
         enabled: ${{ parameters.RunADF }}
   
   - ${{ each env in parameters.environments }}:
-    - stage: CD-${{ env.value }}
+    - stage:
       displayName: ${{ env.value }}
       variables:
         - group: env.value
