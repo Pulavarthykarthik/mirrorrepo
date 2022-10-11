@@ -1,70 +1,95 @@
-trigger:
-  batch: true
-  branches:
-    include:
-      - main
-
 parameters:
-  - name: environments
-    type: object
-    default:
-    - envname: qa
-    - envname: prod
-  - name: RunADF
-    displayName: Run ADF
-    type: boolean
-    default: true
+- name: thingsMap
+  type: object
+  default:
+  - qa
+  - prod
+ 
+jobs:
+- ${{each thing in parameters.thingsMap}}:
+  - job: EachMapJobs${{thing}}
+    pool:
+      vmImage: windows-latest
+    steps:
+    - pwsh: Write-Output ${{thing}}
+      displayName: Show thing
 
-variables:
 
-  - name: ADFProjectPath
-    value: '$(Build.Repository.LocalPath)/ADFIntegration'
+
+
+
+
+
+
+
+
+# trigger:
+#   batch: true
+#   branches:
+#     include:
+#       - main
+
+# parameters:
+#   - name: environments
+#     type: object
+#     default:
+#     - envname: qa
+#     - envname: prod
+#   - name: RunADF
+#     displayName: Run ADF
+#     type: boolean
+#     default: true
+
+# variables:
+
+#   - name: ADFProjectPath
+#     value: '$(Build.Repository.LocalPath)/ADFIntegration'
   
-  - name: ADFSourceFactoryPath
-    value: '/subscriptions/1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9/resourceGroups/daa-pract-adf-dev/providers/Microsoft.DataFactory/factories/daapractdevadf'
+#   - name: ADFSourceFactoryPath
+#     value: '/subscriptions/1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9/resourceGroups/daa-pract-adf-dev/providers/Microsoft.DataFactory/factories/daapractdevadf'
 
-stages:
+# stages:
 
-  - stage: CI
-    jobs: 
+#   - stage: CI
+#     jobs: 
 
-    - template: release_template/ADF-Build.yml
-      parameters:
-        projectPath: ${{ variables.ADFProjectPath }}
-        sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
-        enabled: ${{ parameters.RunADF }}
+#     - template: release_template/ADF-Build.yml
+#       parameters:
+#         projectPath: ${{ variables.ADFProjectPath }}
+#         sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
+#         enabled: ${{ parameters.RunADF }}
   
-  - ${{ each env in parameters.environments }}:
-    - stage:
-      displayName: ${{ env.value }}
-      variables:
-        - group: env.value
-        - name: connection
-          ${{ if eq(env.value, 'qa') }}:
-            value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
-          ${{ if eq(env.value, 'prod') }}:
-            value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
-        - name: adfresourcegroup
-          ${{ if eq(env.value, 'qa') }}:
-            value: $(adfqaResourceGroup)
-          ${{ if eq(env.value, 'prod') }}:
-            value: $(adfprodResourceGroup)
-        - name: adfName
-          ${{ if eq(env.value, 'qa') }}:
-            value: $(adfqaname)
-          ${{ if eq(env.value, 'prod') }}:
-            value: $(adfprodname)
+#   - ${{ each env in parameters.environments }}:
+#     - stage:
+#       displayName: ${{ env.key }}
+#       variables:
+#         - group: env.value
+#         - name: connection
+#           ${{ if eq(env.value, 'qa') }}:
+#             value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
+#           ${{ if eq(env.value, 'prod') }}:
+#             value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
+#         - name: adfresourcegroup
+#           ${{ if eq(env.value, 'qa') }}:
+#             value: $(adfqaResourceGroup)
+#           ${{ if eq(env.value, 'prod') }}:
+#             value: $(adfprodResourceGroup)
+#         - name: adfName
+#           ${{ if eq(env.value, 'qa') }}:
+#             value: $(adfqaname)
+#           ${{ if eq(env.value, 'prod') }}:
+#             value: $(adfprodname)
 
-      jobs:
-        - template: release_template/ADF-Release.yml
-          parameters:
-            env: ${{ env.value }}
-            azureServiceConnection: ${{ variables['connection'] }}
-            azureSubscriptionId: $(subscriptionId)
-            azureLocation: $(adfLocation)
-            azureResourceGroup: ${{ variables['adfresourcegroup'] }}
-            adfName: ${{ variables['adfName'] }}
-            enabled: ${{ parameters.RunADF }}
+#       jobs:
+#         - template: release_template/ADF-Release.yml
+#           parameters:
+#             env: ${{ env.value }}
+#             azureServiceConnection: ${{ variables['connection'] }}
+#             azureSubscriptionId: $(subscriptionId)
+#             azureLocation: $(adfLocation)
+#             azureResourceGroup: ${{ variables['adfresourcegroup'] }}
+#             adfName: ${{ variables['adfName'] }}
+#             enabled: ${{ parameters.RunADF }}
 
 
 
