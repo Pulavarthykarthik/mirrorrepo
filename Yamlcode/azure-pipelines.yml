@@ -1,303 +1,74 @@
 trigger:
+  batch: true
   branches:
     include:
-    - develop
-
-pool:
-  vmImage: 'windows-latest'
-
-stages:
-  - stage: Build_ADF_develop
-    displayName: Build ADF artifact in dev branch
-    jobs: 
-      - job: Creating
-        displayName: "Creating Artifact"
-        pool:
-          vmImage: 'windows-latest'
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '14.x'
-            displayName: 'Install Node.js'
-
-          - task: Npm@1
-            inputs:
-              command: 'install'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' 
-              verbose: true
-            displayName: 'Install npm package'
-
-# Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
-# Enter the appropriate subscription and name for the source factory.
-
-          - task: Npm@1
-            inputs:
-              command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' #package.json folder
-              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(subscriptionid)/resourceGroups/$(resourcegroup_dev)/providers/Microsoft.DataFactory/factories/$(adfname_dev)'
-            displayName: 'Validate'
-
-# Validate and then generate the ARM template into the destination folder, which is the same as selecting "Publish" from the UX.
-# The ARM template generated isn't published to the live version of the factory. Deployment should be done by using a CI/CD pipeline. 
-
-          - task: Npm@1
-            inputs:
-              command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(subscriptionid)/resourceGroups/$(resourcegroup_dev)/providers/Microsoft.DataFactory/factories/$(adfname_dev) artifacts'  
-            displayName: 'Validate and Generate ARM template'
-
-# Publish the artifact to be used as a source for a release pipeline.
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/artifacts'
-              Contents: '**'
-              TargetFolder: '$(build.artifactstagingdirectory)/application'
-            displayName: 'Copying application artifact'
-
-
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(build.artifactstagingdirectory)'
-              artifact: 'datafactory'
-              publishLocation: 'pipeline'
-
-      # To Know folder structure
-          - powershell: |
-              tree "$(build.artifactstagingdirectory)" /F
-            displayName: "Treeview of build.artifactstagingdirectory"
-
-  trigger:
-    branches:
-      include:
       - main
 
-  -stage: Build_ADF_main
-    displayName: Build ADF artifact in main branch
+parameters:
+  - name: environments
+    type: object
+    default:
+      - qa
+      - prod
+  - name: RunADF
+    displayName: Run ADF
+    type: boolean
+    default: true
+
+variables:
+
+  - name: ADFProjectPath
+    value: '$(Build.Repository.LocalPath)/ADFIntegration'
+  
+  - name: ADFSourceFactoryPath
+    value: '/subscriptions/1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9/resourceGroups/daa-pract-adf-dev/providers/Microsoft.DataFactory/factories/daapractdevadf'
+
+stages:
+
+  - stage: CI
     jobs: 
-      - job: Creating
-        displayName: "Creating Artifact"
-        pool:
-          vmImage: 'windows-latest'
-        steps:
-          - task: NodeTool@0
-            inputs:
-              versionSpec: '14.x'
-            displayName: 'Install Node.js'
 
-          - task: Npm@1
-            inputs:
-              command: 'install'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' 
-              verbose: true
-            displayName: 'Install npm package'
-
-# Validates all of the Data Factory resources in the repository. You'll get the same validation errors as when "Validate All" is selected.
-# Enter the appropriate subscription and name for the source factory.
-
-          - task: Npm@1
-            inputs:
-              command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration' #package.json folder
-              customCommand: 'run build validate $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(subscriptionid)/resourceGroups/$(resourcegroup_dev)/providers/Microsoft.DataFactory/factories/$(adfname_dev)'
-            displayName: 'Validate'
-
-# Validate and then generate the ARM template into the destination folder, which is the same as selecting "Publish" from the UX.
-# The ARM template generated isn't published to the live version of the factory. Deployment should be done by using a CI/CD pipeline. 
-
-          - task: Npm@1
-            inputs:
-              command: 'custom'
-              workingDir: '$(Build.Repository.LocalPath)/ADFIntegration'
-              customCommand: 'run build export $(Build.Repository.LocalPath)/ADFIntegration /subscriptions/$(subscriptionid)/resourceGroups/$(resourcegroup_dev)/providers/Microsoft.DataFactory/factories/$(adfname_dev) artifacts'  
-            displayName: 'Validate and Generate ARM template'
-
-# Publish the artifact to be used as a source for a release pipeline.
-          - task: CopyFiles@2
-            inputs:
-              SourceFolder: '$(Build.Repository.LocalPath)/ADFIntegration/artifacts'
-              Contents: '**'
-              TargetFolder: '$(build.artifactstagingdirectory)/application'
-            displayName: 'Copying application artifact'
-
-
-          - task: PublishPipelineArtifact@1
-            inputs:
-              targetPath: '$(build.artifactstagingdirectory)'
-              artifact: 'datafactory'
-              publishLocation: 'pipeline'
-
-      # To Know folder structure
-          - powershell: |
-              tree "$(build.artifactstagingdirectory)" /F
-            displayName: "Treeview of build.artifactstagingdirectory"
-
-#release pipeline
-  - stage: 'UAT'
-    displayName: 'UAT deploy'
-    dependsOn: Build_ADF_develop
-    variables:
-      dataFactoryName: $(uat_datafactoryname)
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
+    - template: release_template/ADF-Build.yaml
+      parameters:
+        projectPath: ${{ variables.ADFProjectPath }}
+        sourceFactoryPath: ${{ variables.ADFSourceFactoryPath }}
+        enabled: ${{ parameters.RunADF }}
   
-    jobs:
-      #- #job: #develop
-        #displayName: develop
-        #pool:
-          #vmImage: 'windows-latest'
-        #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'))
-      - deployment: DeploytoUAT
-        pool:
-          vmImage: 'windows-latest'
-        environment: UAT
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    source: current
-                    artifactName: 'datafactory'
-                    targetPath: '$(Pipeline.Workspace)'
-                  displayName: Downloading Artifact
-        #to know folder structure
-                - powershell: |
-                    tree "$(Pipeline.Workspace)" /F
-                    Get-Content -Path $(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1
-                  displayName: 'Treeview of Pipeline.Workspace'
+  - ${{ each env in parameters.environments }}:
+    - stage:
+      displayName: CD - ${{ env }}
+      variables:
+        - group: ${{ env }}
+        - name: connection
+          ${{ if eq(env, 'qa') }}:
+            value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
+          ${{ if eq(env, 'prod') }}:
+            value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
+        - name: adfresourcegroup
+          ${{ if eq(env, 'qa') }}:
+            value: $(adfqaResourceGroup)
+          ${{ if eq(env, 'prod') }}:
+            value: $(adfprodResourceGroup)
+        - name: adfName
+          ${{ if eq(env, 'qa') }}:
+            value: $(adfqaname)
+          ${{ if eq(env, 'prod') }}:
+            value: $(adfprodname)
 
-                - task: DownloadSecureFile@1
-                  name: adfparameter
-                  displayName: 'Download Parameters from secure files'
-                  inputs:
-                    secureFile: ARMTemplateParametersForFactoryuat.json
-                - pwsh: |
-                    Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
-                    Remove-Item ARMTemplateParametersForFactory.json
-                    Rename-Item -Path ARMTemplateParametersForFactoryuat.json -NewName ARMTemplateParametersForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                  displayName: Replace ARM Template Parameters
-                - pwsh: |
-                    (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                  displayName: Replace Managed Identity to System Assigned
-        #stop Trigger
-                - task: AzurePowerShell@5
-                  displayName: Stop Trigger
-                  inputs: 
-                    azureSubscription: $(myserviceconnection)
-                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rguatname) -DataFactoryName $(uat_datafactoryname) -predeployment $true -deleteDeployment $false
-                    azurePowerShellVersion: 'LatestVersion'
+      jobs:
+        - template: release_template/ADF-release.yaml
+          parameters:
+            env: ${{ env }}
+            azureServiceConnection: ${{ variables['connection'] }}
+            azureSubscriptionId: $(subscriptionId)
+            azureLocation: $(adfLocation)
+            azureResourceGroup: ${{ variables['adfresourcegroup'] }}
+            adfName: ${{ variables['adfName'] }}
+            enabled: ${{ parameters.RunADF }}
 
-                - task: AzureResourceManagerTemplateDeployment@3
-                  displayName: 'Deploying to UAT RG task'
-                  inputs:
-                    deploymentScope: Resource Group
-                    azureResourceManagerConnection: $(myserviceconnection)
-                    subscriptionId: $(subscriptionid)
-                    action: Create Or Update Resource Group
-                    resourceGroupName: $(rguatname)
-                    location: $(UATlocation)
-                    templateLocation: Linked artifact
-                    csmFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json'
-                    csmParametersFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateParametersForFactory.json'
-                    deploymentMode: Incremental
-        #start Trigger
-                - task: AzurePowerShell@5
-                  displayName: Start Trigger
-                  inputs: 
-                    azureSubscription: $(myserviceconnection)
-                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rguatname) -DataFactoryName $(uat_datafactoryname) -predeployment $false -deleteDeployment $true
-                    azurePowerShellVersion: 'LatestVersion'
 
-#release pipeline for prod
-  #- stage: 'approve_deployment'
-  #  displayName: 'Approval to Deploy to PROD'
-  #  dependsOn: Build_ADF
-  #  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
-  - stage: 'PROD'
-    displayName: 'PROD deploy'
-    dependsOn: Build_ADF_main
-    variables:
-      dataFactoryName: $(prod_datafactoryname)
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
-  
-    jobs:
-      #- #job: #prod
-        #displayName: prod
-        #pool:
-          #vmImage: 'windows-latest'
-        #condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/main'))
 
-      - deployment: DeploytoPROD
-        pool:
-          vmImage: 'windows-latest'
-        environment: PROD
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: DownloadPipelineArtifact@2
-                  inputs:
-                    source: current
-                    artifactName: 'datafactory'
-                    targetPath: '$(Pipeline.Workspace)'
-                  displayName: Downloading Artifact
-        #to know folder structure
-                - powershell: |
-                    tree "$(Pipeline.Workspace)" /F
-                    Get-Content -Path $(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1
-                  displayName: 'Treeview of Pipeline.Workspace'
 
-                - task: DownloadSecureFile@1
-                  name: adfparameter
-                  displayName: 'Download Parameters from secure files'
-                  inputs:
-                    secureFile: ARMTemplateParametersForFactoryprod.json
-                - pwsh: |
-                    Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
-                    Remove-Item ARMTemplateParametersForFactory.json
-                    Rename-Item -Path ARMTemplateParametersForFactoryprod.json -NewName ARMTemplateParametersForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                  displayName: Replace ARM Template Parameters
-                - pwsh: |
-                    (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
-                  workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                  displayName: Replace Managed Identity to System Assigned
-        #stop Trigger
-                - task: AzurePowerShell@5
-                  displayName: Stop Trigger
-                  inputs: 
-                    azureSubscription: $(myserviceconnection)
-                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rgprodname) -DataFactoryName $(prod_datafactoryname) -predeployment $true -deleteDeployment $false
-                    azurePowerShellVersion: 'LatestVersion'
 
-                - task: AzureResourceManagerTemplateDeployment@3
-                  displayName: 'Deploying to PROD RG task'
-                  inputs:
-                    deploymentScope: Resource Group
-                    azureResourceManagerConnection: $(myserviceconnection)
-                    subscriptionId: $(subscriptionid)
-                    action: Create Or Update Resource Group
-                    resourceGroupName: $(rgprodname)
-                    location: $(PRODlocation)
-                    templateLocation: Linked artifact
-                    csmFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json'
-                    csmParametersFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateParametersForFactory.json'
-                    deploymentMode: Incremental
-        #start Trigger
-                - task: AzurePowerShell@5
-                  displayName: Start Trigger
-                  inputs: 
-                    azureSubscription: $(myserviceconnection)
-                    workingDirectory: $(Pipeline.Workspace)/datafactory/application
-                    ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
-                    ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName $(rgprodname) -DataFactoryName $(prod_datafactoryname) -predeployment $false -deleteDeployment $true
-                    azurePowerShellVersion: 'LatestVersion'  
+
