@@ -55,7 +55,7 @@ stages:
         enabled: ${{ parameters.RunADF }}
      
     - ${{each env in parameters.environments}}:
-    - stage:
+    - stage: CD_${{env}}
       displayName: CD${{env}}
       variables:
         - group: CD${{env}}
