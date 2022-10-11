@@ -1,11 +1,7 @@
 trigger:
-<<<<<<< HEAD
   branches:
     include:
     - develop
-=======
-- develop
->>>>>>> e7d84bb7faa3b7fa5c22faf47aa550b4ae2ca37d
 
 pool:
   vmImage: 'windows-latest'
@@ -71,15 +67,10 @@ stages:
               tree "$(build.artifactstagingdirectory)" /F
             displayName: "Treeview of build.artifactstagingdirectory"
 
-<<<<<<< HEAD
   trigger:
     branches:
       include:
       - main
-=======
-trigger:
-  -main
->>>>>>> e7d84bb7faa3b7fa5c22faf47aa550b4ae2ca37d
 
   -stage: Build_ADF_main
     displayName: Build ADF artifact in main branch
