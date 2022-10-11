@@ -5,9 +5,8 @@ parameters:
   - qa
   - prod
  
-jobs:
 - ${{each env in parameters.environments}}:
-  - job: EachMapJobs${{env}}
+- stage:
     pool:
       vmImage: windows-latest
     steps:
