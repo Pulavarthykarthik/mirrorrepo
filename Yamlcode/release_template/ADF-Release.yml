@@ -11,7 +11,7 @@ parameters:
 
   
 jobs:
-- deployment: Release ADF - ${{ parameters.env }}
+- deployment: Release ADF_${{ parameters.env }}
   pool:
     vmImage: 'windows-latest'
   environment: ${{ parameters.env }}-ADF
