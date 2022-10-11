@@ -32,11 +32,11 @@ jobs:
             name: adfparameter
             displayName: 'Download Parameters from secure files'
             inputs:
-              secureFile: ARMTemplateParametersForFactory-${{ parameters.env }}.json
+              secureFile: ARMTemplateParametersForFactory${{ parameters.env }}.json
           - pwsh: |
               Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
               Remove-Item ARMTemplateParametersForFactory.json
-              Rename-Item -Path ARMTemplateParametersForFactory-${{ parameters.env }}.json -NewName ARMTemplateParametersForFactory.json
+              Rename-Item -Path ARMTemplateParametersForFactory${{ parameters.env }}.json -NewName ARMTemplateParametersForFactory.json
             workingDirectory: $(Pipeline.Workspace)/datafactory/application
             displayName: Replace ARM Template Parameters
           - pwsh: |
