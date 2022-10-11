@@ -1,18 +1,18 @@
-parameters:
-- name: environments
-  type: object
-  default:
-  - qa
-  - prod
+# parameters:
+# - name: environments
+#   type: object
+#   default:
+#   - qa
+#   - prod
  
 
-- ${{each thing in parameters.thingsMap}}:
-  - job: EachMapJobs${{thing.key}}
-    pool:
-      vmImage: ubuntu-20.04
-    steps:
-    - pwsh: Write-Output ${{thing}}
-      displayName: Show thin
+# - ${{each thing in parameters.thingsMap}}:
+#   - job: EachMapJobs${{thing.key}}
+#     pool:
+#       vmImage: ubuntu-20.04
+#     steps:
+#     - pwsh: Write-Output ${{thing}}
+#       displayName: Show thin
 
 
 
