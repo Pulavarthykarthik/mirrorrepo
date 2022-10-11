@@ -60,10 +60,10 @@ jobs:
           artifact: 'datafactory'
           publishLocation: 'pipeline'
 
-      - task: Folder values
-        inputs:
-          targetType: 'inline'
-          script: 'env | sort'
+      # - task: Folder values
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: 'env | sort'
 
       - powershell: |
           tree "$(build.artifactstagingdirectory)" /F
