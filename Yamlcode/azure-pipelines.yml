@@ -38,7 +38,7 @@ stages:
     - stage:
       displayName: CD - ${{ env.Value }}
       variables:
-        - group: ${{ env.Value }}
+        - group: ${{ env }}
         - name: connection
           ${{ if eq(env.Value, 'qa') }}:
             value: 'Microsoft Azure Enterprise BigDataAI (1ead8068-fad9-4a3a-a6ca-8c1b51afc5d9)'
