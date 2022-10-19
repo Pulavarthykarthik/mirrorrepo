@@ -1,0 +1,232 @@
+[33mcommit 4518d2382ba23840cae8b239825d4e25d60a81c6[m[33m ([m[1;36mHEAD -> [m[1;32mfeature2[m[33m, [m[1;31morigin/pk-feature1[m[33m)[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 15:53:50 2022 +0530
+
+    added linked artifacts
+
+[33mcommit 1846f6e0a2e8f94610316e886561724b1abdee11[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 15:34:43 2022 +0530
+
+    removed  approval part
+
+[33mcommit 5147ee8036a9c55281fa7b612d3612ce1e086a76[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 15:23:35 2022 +0530
+
+    added deployment in prod env
+
+[33mcommit 20776dc4322d0e4c0728ef883870cb157775589e[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 15:06:34 2022 +0530
+
+    changed format
+
+[33mcommit f0cdde4d17c432daeeab17d8dc63d2db61626d60[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 14:42:49 2022 +0530
+
+    changed format
+
+[33mcommit 5f4ca55c2d588e5ed0e8700df799432129f0a881[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 14:41:52 2022 +0530
+
+    changed format
+
+[33mcommit 7ec15bd43142e6084da2fd113faa131232b42183[m
+Author: Pulavarthy Karthik <kpulavarthy0910@gmail.com>
+Date:   Thu Oct 6 14:39:46 2022 +0530
+
+    changed format
+
+[33mcommit cd1362260f236bca1bbc55d827c863d2187fdffb[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 13:57:50 2022 +0530
+
+    Update azure-pipelines.yml for Azure Pipelines
+
+[33mcommit cb523c66745ea833c9fd48cd92e916e709cee146[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 13:55:48 2022 +0530
+
+    Update azure-pipelines.yml for Azure Pipelines
+
+[33mcommit 1830bb3acfa66a4f3214d6dd2a0e7da52c6b383b[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 13:34:25 2022 +0530
+
+    Add files via upload
+
+[33mcommit 26072d8ced62e974ec955516498a2532274bda7e[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 13:32:54 2022 +0530
+
+    Update arm-template-parameters-definition.json
+
+[33mcommit 53212dd48bcbc7ba271159435d2d30912d83a1a6[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 12:56:11 2022 +0530
+
+    Add files via upload
+
+[33mcommit 8fc4b4699d2342e287b8ed6eae7d77923033d9a7[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 12:55:32 2022 +0530
+
+    Delete azure-pipelines.yml
+
+[33mcommit 171fc230bebda15c7cc0c4b80589ad1c96de32a5[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Thu Oct 6 12:55:18 2022 +0530
+
+    Create demo.txt
+
+[33mcommit 5931e3a9d9f3ad8e2e5ecc031e149e22bd4a786a[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 17:07:30 2022 +0530
+
+    Adding dataset: delete_input
+
+[33mcommit f7c3806a5b0f59acc3571a7f4c060c1101b4b0d8[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 17:06:33 2022 +0530
+
+    Deleting dataset: delete_input
+
+[33mcommit c75c8dad86fcbfa10dd562b55eb153c2f7372932[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 17:05:16 2022 +0530
+
+    Adding pipeline: delete_pipeline
+    Adding dataset: delete_input
+    Adding dataset: delete_output
+
+[33mcommit 2513c2f7e9d063db64ddd715af0c6f6677387708[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 17:00:47 2022 +0530
+
+    Updating pipeline: pipeline1
+    Adding dataset: input_data_dev
+
+[33mcommit 344be19764429826d0ee58824913b8b57a93aa1f[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 16:59:29 2022 +0530
+
+    Adding dataset: outputdata_dev
+
+[33mcommit bca0a2678fbd836c3adcd8233d6afe5d51024b13[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 16:51:53 2022 +0530
+
+    Adding linkedService: AzureBlobStorage1
+
+[33mcommit 00134a427cca51dc59d67862fa3081a8c634ee7a[m
+Author: Pulavarthykarthik-nagarro <113983024+Pulavarthykarthik-nagarro@users.noreply.github.com>
+Date:   Wed Oct 5 16:51:39 2022 +0530
+
+    Adding linkedService: AzureKeyVault_dev
+
+[33mcommit f6965c0392c72eac627c05de73b2898a6c445a2b[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:51:25 2022 +0530
+
+    Deleting dataset: dev_output
+
+[33mcommit b775995a798419641a682310e85330c622d317fd[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:51:18 2022 +0530
+
+    Deleting dataset: dev_input
+
+[33mcommit bc23e5cc94a799f493f063a84f8e72259bf0d8d7[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:53 2022 +0530
+
+    Deleting linkedService: MBUSA_DEV
+
+[33mcommit 99491091effb7a4769f99e163a4d2e4aafc3ac94[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:47 2022 +0530
+
+    Deleting linkedService: LS_RSV_mbusa-daps-prod_CoE_KV
+
+[33mcommit 24b57f1106fcdd5582a0b12bf6ec8ef7a25495df[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:41 2022 +0530
+
+    Deleting linkedService: LS_RSV_edwdev_CoE_KV
+
+[33mcommit 4cc47c62c88859ab08e82e5b0c352d0388e496a5[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:35 2022 +0530
+
+    Deleting linkedService: LS_MS_PROD_UIO_ADLS
+
+[33mcommit 0bb81b8b7343f9b60d213adc43b602600d1f01d3[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:29 2022 +0530
+
+    Deleting linkedService: LS_MS_PROD_MRA_ADLS
+
+[33mcommit 1c8a11848d82be9c476ae8deb69b10db846cd726[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:22 2022 +0530
+
+    Deleting linkedService: LS_MS_DEV_ADLS_RSV
+
+[33mcommit 1f17b404efa4b4689fbecd8ad011a3f0d6ea3c8a[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:15 2022 +0530
+
+    Deleting linkedService: LS_MS_ADLS_SP_KV_Prod
+
+[33mcommit 79a32e1b9399f674cda0f4606b4f1200085205ed[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:08 2022 +0530
+
+    Deleting linkedService: LS_MS_ADLS_SP_KV_dev
+
+[33mcommit 05c4071fc2ed679e505728eec931315f6e205947[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:46:01 2022 +0530
+
+    Deleting linkedService: LS_MS_ADLS_SP_KV1
+
+[33mcommit 130190a62a40511b1a5242275267a07b0dbaa194[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:45:54 2022 +0530
+
+    Deleting linkedService: LS_MS_ADLS_SP_KV
+
+[33mcommit c29053765ff3147f33f7f2a86818ac2c5a5b972c[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:45:41 2022 +0530
+
+    Deleting linkedService: LS_ADLS_XTOMSUSRSVEDWDEVADLS_v2
+
+[33mcommit 5e4037e9b0c57d38e0d036b870bd99d1fdaaa038[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:45:32 2022 +0530
+
+    Deleting linkedService: LS_ADLS_AR_V2
+
+[33mcommit 3ee70404856dc7a236d8582b3231f9e5b60403a7[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:45:23 2022 +0530
+
+    Deleting linkedService: Gen2_Domain_ADLS
+
+[33mcommit d7b57677426eff28d91189616d6e3915cda2b8cb[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:45:15 2022 +0530
+
+    Deleting linkedService: datalakegen2_poly
+
+[33mcommit 0ad8c70648fd7a45ffbf224eb7e9b9e2670602dd[m
+Author: devops-kv <112539484+devops-kv@users.noreply.github.com>
+Date:   Wed Oct 5 16:41:11 2022 +0530
+
+    Deleting linkedService: AzureSynapseAnalytics1
+
+[33mcommit 00350e9411a31b918e49867e
