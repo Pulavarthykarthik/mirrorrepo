@@ -1,0 +1,77 @@
+parameters:
+  - name: env
+  - name: azureServiceConnection
+  - name: azureSubscriptionId
+  - name: azureLocation
+  - name: azureResourceGroup
+  - name: adfName
+  - name: enabled
+    type: boolean
+
+
+  
+jobs:
+- deployment: Release ADF_${{ parameters.env }}
+  pool:
+    vmImage: 'windows-latest'
+  environment: ${{ parameters.env }}-ADF
+  #dependsOn: releaseApproval
+  condition: eq('${{ parameters.enabled }}', true)
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              source: current
+              artifactName: 'datafactory'
+              targetPath: '$(Pipeline.Workspace)'
+            displayName: Downloading Artifact
+             
+          - task: DownloadSecureFile@1
+            name: adfparameter
+            displayName: 'Download Parameters from secure files'
+            inputs:
+              secureFile: ARMTemplateParametersForFactory${{ parameters.env }}.json
+          - pwsh: |
+              Copy-Item "$(adfParameter.secureFilePath)" -Destination "$(Pipeline.Workspace)/datafactory/application"
+              Remove-Item ARMTemplateParametersForFactory.json
+              Rename-Item -Path ARMTemplateParametersForFactory${{ parameters.env }}.json -NewName ARMTemplateParametersForFactory.json
+            workingDirectory: $(Pipeline.Workspace)/datafactory/application
+            displayName: Replace ARM Template Parameters
+          - pwsh: |
+              (Get-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json) -Replace '"type": "ManagedIdentity"', '"type": "SystemAssigned"' | Set-Content $(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json
+            workingDirectory: $(Pipeline.Workspace)/datafactory/application
+            displayName: Replace Managed Identity to System Assigned
+        #stop Trigger
+          - task: AzurePowerShell@5
+            displayName: Stop Trigger
+            inputs: 
+              azureSubscription: $(myserviceconnection)
+              workingDirectory: $(Pipeline.Workspace)/datafactory/application
+              ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+              ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName '${{ parameters.azureResourceGroup }}' -DataFactoryName '${{ parameters.adfName }}' -predeployment $true -deleteDeployment $false
+              azurePowerShellVersion: 'LatestVersion'
+
+          - task: AzureResourceManagerTemplateDeployment@3
+            displayName: 'Deploying to UAT RG task'
+            inputs:
+              deploymentScope: Resource Group
+              azureResourceManagerConnection: '${{ parameters.azureServiceConnection }}'
+              subscriptionId: '${{ parameters.azureSubscriptionId }}'
+              action: Create Or Update Resource Group
+              resourceGroupName: '${{ parameters.azureResourceGroup }}'
+              location: '${{ parameters.azureLocation }}'
+              templateLocation: Linked artifact
+              csmFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json'
+              csmParametersFile: '$(Pipeline.Workspace)/datafactory/application/ARMTemplateParametersForFactory.json'
+              deploymentMode: Incremental
+        #start Trigger
+          - task: AzurePowerShell@5
+            displayName: Start Trigger
+            inputs: 
+              azureSubscription: $(myserviceconnection)
+              workingDirectory: $(Pipeline.Workspace)/datafactory/application
+              ScriptPath: '$(Pipeline.Workspace)/datafactory/application/PrePostDeploymentScript.ps1'
+              ScriptArguments: -armTemplate "$(Pipeline.Workspace)/datafactory/application/ARMTemplateForFactory.json" -ResourceGroupName '${{ parameters.azureResourceGroup }}' -DataFactoryName '${{ parameters.adfName }}' -predeployment $false -deleteDeployment $true
+              azurePowerShellVersion: 'LatestVersion'
